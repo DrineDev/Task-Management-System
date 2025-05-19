@@ -1,62 +1,184 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Task Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web application built with Laravel, styled with Tailwind CSS, and using Supabase as the backend database service.
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Before setting up this project, you'll need to install the following software:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- XAMPP (includes PHP 8.1 or higher)
+- Composer (PHP package manager)
+- Node.js and npm
+- Git
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation Guide
 
-## Learning Laravel
+### 1. Installing XAMPP
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Download XAMPP:
+   - Visit: https://www.apachefriends.org/download.html
+   - Download the latest version for Windows
+   - Run the installer and follow the installation wizard
+   - Make sure to install at least Apache and PHP modules
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. Verify XAMPP installation:
+   - Open XAMPP Control Panel
+   - Start Apache
+   - Visit `http://localhost` in your browser
+   - You should see the XAMPP welcome page
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Installing Composer
 
-## Laravel Sponsors
+Open CMD as Administrator and run:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```cmd
+powershell -Command "Invoke-WebRequest -Uri https://getcomposer.org/Composer-Setup.exe -OutFile C:\xampp\php\composer-setup.exe"
+powershell -Command "Start-Process -FilePath C:\xampp\php\composer-setup.exe -ArgumentList '/VERYSILENT' -Wait"
+```
 
-### Premium Partners
+Verify Composer installation:
+- Open a new CMD window
+- Run:
+```cmd
+composer --version
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Installing Node.js
 
-## Contributing
+1. Download Node.js:
+   - Visit: https://nodejs.org/
+   - Download the LTS (Long Term Support) version
+   - Run the downloaded .msi installer
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. Verify Node.js and npm installation:
+   - Open a new CMD window
+   - Run:
+   ```cmd
+   node --version
+   npm --version
+   ```
 
-## Code of Conduct
+### 4. Setting Up the Project
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Clone the repository:
+   ```cmd
+   cd C:\xampp\htdocs
+   git clone https://github.com/DrineDev/Task-Management-System.git
+   cd Task-Management-System
+   ```
 
-## Security Vulnerabilities
+2. Install PHP dependencies:
+   ```cmd
+   composer install
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. Create environment file:
+   ```cmd
+   copy .env.example .env
+   php artisan key:generate
+   ```
+
+4. Install Node.js dependencies and build assets:
+   ```cmd
+   npm install
+   npm run dev
+   ```
+
+### 5. Running the Application
+
+1. Make sure XAMPP's Apache service is running:
+   - Open XAMPP Control Panel
+   - Click "Start" next to Apache
+
+2. In a separate CMD window, start Vite for Tailwind CSS processing:
+   ```cmd
+   cd C:\xampp\htdocs\Task-Management-System
+   npm run dev
+   ```
+
+3. Visit `http://localhost/Task-Management-System/public` in your browser
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Apache not starting**:
+   - Check if port 80 is in use by another application
+   - Try changing Apache's port in XAMPP Control Panel
+   - Make sure you have administrator privileges
+
+2. **Composer not found**:
+   - Make sure Composer is installed correctly
+   - Check if PHP is in your system PATH
+   - Try closing and reopening CMD
+
+3. **Node.js/npm not found**:
+   - Make sure Node.js is installed correctly
+   - Try closing and reopening CMD
+   - Verify the installation in Control Panel
+
+4. **Permission issues**:
+   - Run CMD as Administrator
+   - Make sure you have write permissions in the project directory
+   - Check XAMPP's Apache user permissions
+
+5. **Vite not working**:
+   - Make sure you're running `npm run dev` in the project directory
+   - Check if Node.js and npm are properly installed
+   - Try clearing npm cache: `npm cache clean --force`
+
+## Additional Notes
+
+- Make sure to keep your `.env` file secure and never commit it to version control
+- The project uses Tailwind CSS for styling, which is automatically processed by Vite
+- For any database-related issues, contact the project administrator for the correct `.env` configuration
+- When deploying updates, remember to:
+  1. Pull the latest changes
+  2. Run `composer install`
+  3. Run `npm install`
+  4. Run `npm run build` (for production)
+  5. Clear Laravel cache: `php artisan cache:clear`
+
+## Verification Steps
+
+After installation, verify everything is working correctly:
+
+1. Visit `http://localhost:8000` in your browser. You should see the application homepage.
+
+2. Check PHP info page (add this route to your web.php first):
+   ```php
+   Route::get('/phpinfo', function() {
+       phpinfo();
+   });
+   ```
+
+3. Test database connection:
+   ```cmd
+   php artisan tinker
+   # Then in Tinker:
+   DB::connection()->getPdo();
+   # If you don't see any errors, the database connection is successful
+   ```
+
+4. Test Supabase connection:
+   Create a test route in `routes/web.php`:
+   ```php
+   Route::get('/test-supabase', function() {
+       $supabase = new \Supabase\Client(
+           env('SUPABASE_URL'),
+           env('SUPABASE_KEY')
+       );
+       return $supabase->auth->getUser();
+   });
+   ```
+
+## Additional Resources
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Supabase Documentation](https://supabase.io/docs)
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Task-Management-System
+[MIT](LICENSE)
+
