@@ -13,37 +13,37 @@ Before setting up this project, you'll need to install the following software:
 
 ## Installation Guide
 
-### 1. Installing XAMPP
+### 1. Installing PHP and Composer
 
-1. Download XAMPP:
-   - Visit: https://www.apachefriends.org/download.html
-   - Download the latest version for Windows
-   - Run the installer and follow the installation wizard
-   - Make sure to install at least Apache and PHP modules
-
-2. Verify XAMPP installation:
-   - Open XAMPP Control Panel
-   - Start Apache
-   - Visit `http://localhost` in your browser
-   - You should see the XAMPP welcome page
-
-### 2. Installing Composer
-
-Open CMD as Administrator and run:
+Open CMD as Administrator and run these commands:
 
 ```cmd
-powershell -Command "Invoke-WebRequest -Uri https://getcomposer.org/Composer-Setup.exe -OutFile C:\xampp\php\composer-setup.exe"
-powershell -Command "Start-Process -FilePath C:\xampp\php\composer-setup.exe -ArgumentList '/VERYSILENT' -Wait"
+powershell -Command "New-Item -ItemType Directory -Force -Path C:\php"
+powershell -Command "Invoke-WebRequest -Uri https://windows.php.net/downloads/releases/php-8.2.10-Win32-vs16-x64.zip -OutFile C:\php\php.zip"
+powershell -Command "Expand-Archive -Path C:\php\php.zip -DestinationPath C:\php -Force"
+powershell -Command "Copy-Item C:\php\php.ini-development C:\php\php.ini"
+powershell -Command "[Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';C:\php', 'Machine')"
+```
+
+Verify PHP installation:
+- Open a new CMD window
+- Run:
+```cmd
+php -v
+```
+
+Install Composer:
+```cmd
+powershell -Command "Invoke-WebRequest -Uri https://getcomposer.org/Composer-Setup.exe -OutFile C:\php\composer-setup.exe"
+powershell -Command "Start-Process -FilePath C:\php\composer-setup.exe -ArgumentList '/VERYSILENT' -Wait"
 ```
 
 Verify Composer installation:
-- Open a new CMD window
-- Run:
 ```cmd
 composer --version
 ```
 
-### 3. Installing Node.js
+### 2. Installing Node.js
 
 1. Download Node.js:
    - Visit: https://nodejs.org/
@@ -58,23 +58,30 @@ composer --version
    npm --version
    ```
 
+### 3. Configure PHP for Laravel
+
+1. Open `C:\xampp\php\php.ini` in a text editor
+2. Uncomment (remove the semicolon) from these lines:
+   ```ini
+   extension=zip
+   extension=pdo_pgsql
+   extension=pgsql
+   ```
+
 ### 4. Setting Up the Project
 
-1. Clone the repository:
+1. Clone the repository to XAMPP's htdocs:
    ```cmd
    cd C:\xampp\htdocs
    git clone https://github.com/DrineDev/Task-Management-System.git
    cd Task-Management-System
    ```
 
-2. Install PHP dependencies:
+2. Copy the provided `.env` file to the project root directory
+
+3. Install Laravel dependencies:
    ```cmd
    composer install
-   ```
-
-3. Create environment file:
-   ```cmd
-   copy .env.example .env
    php artisan key:generate
    ```
 
