@@ -18,8 +18,16 @@
             @csrf
 
             <div>
+                <label for="name">Username</label>
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+                @error('username')
+                    <div>{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div>
                 <label for="email">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required>
                 @error('email')
                     <div>{{ $message }}</div>
                 @enderror
@@ -42,5 +50,9 @@
                 <button type="submit">Register</button>
             </div>
         </form>
+
+        @if(Route::has('login'))
+            <p>Already have an account? <a href="{{ route('login') }}">Login</a></p>
+        @endif
     </body>
 </html>
