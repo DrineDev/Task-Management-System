@@ -17,7 +17,7 @@
         </div>
 
        <!-- CREATE AN ACCOUNT -->
-        <h1 class="text-center text-3xl font-bold text-stone-200 font-['Istok_Web'] mt-16 mb-1.5">Create An Account</h1>h
+        <h1 class="text-center text-3xl font-bold text-stone-200 font-['Istok_Web'] mt-16 mb-1.5">Create An Account</h1>
 
         <!-- SIGN UP FORM WRAPPER -->
      <div class="flex justify-center">
