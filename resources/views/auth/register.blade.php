@@ -85,7 +85,7 @@
                 <!-- Google Button -->
                 <div class="relative w-40 h-9">
                     <button class="w-full h-full flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                        <div class="w-4 h-4 bg-black rounded-full"></div>
+                       <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
                         <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Google</span>
                     </button>
                 </div>
@@ -93,7 +93,7 @@
                 <!-- Facebook Button -->
                 <div class="relative w-40 h-9">
                     <button class="w-full h-full flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                        <div class="w-4 h-4 bg-blue-600 rounded-full"></div>
+                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-4 h-4">
                         <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Facebook</span>
                     </button>
                 </div>

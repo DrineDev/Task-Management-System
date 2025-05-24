@@ -24,7 +24,7 @@
         <div class="flex justify-center items-center flex-grow px-4">
          <div class="bg-[#26231F] p-10 rounded-xl shadow-lg w-full max-w-md mt-20 mb-20">
 
-          <!-- FOROGT PASSWORD INSTRUCTIONS -->
+          <!-- FORGOT PASSWORD INSTRUCTIONS -->
         <h1 class="text-left text-3xl font-bold text-[#ECE3D2] font-['Istok_Web']">Forgot Password?</h1>
         <p class="text-left text-base font-normal text-[#FFFFFF] font-['Istok_Web'] mb-12">
             Enter the email associated with your account 
