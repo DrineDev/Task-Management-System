@@ -11,8 +11,8 @@
      <!-- TOP BAR -->
         <div class="w-full h-32 px-8 py-4 bg-[#D2C5A5] rounded-bl-[72px] rounded-br-[72px] inline-flex flex-col justify-end items-center gap-2.5">
             <div class="w-44 inline-flex justify-between items-center">
-                <a href="/register" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web'] underline">Sign Up</a>
-                <a href="/login" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web']">Log In</a>
+                <a href="{{ route('register') }}" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web'] underline">Sign Up</a>
+                <a href="{{ route('login') }}" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web']">Log In</a>
             </div>
         </div>
 
