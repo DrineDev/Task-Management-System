@@ -9,7 +9,7 @@
     <body class="bg-[#1E1E1E] text-[#F4EBD9] min-h-screen relative overflow-hidden">
        
     <!-- TOP BAR -->
-        <div class="w-full h-32 px-8 py-4 bg-stone-300 rounded-bl-[72px] rounded-br-[72px] inline-flex flex-col justify-end items-center gap-2.5">
+        <div class="w-full h-32 px-8 py-4 bg-[#D2C5A5] rounded-bl-[72px] rounded-br-[72px] inline-flex flex-col justify-end items-center gap-2.5">
             <div class="w-44 inline-flex justify-between items-center">
                 <a href="/register" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web']">Sign Up</a>
                 <a href="/login" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web'] underline">Log In</a>
@@ -124,7 +124,7 @@
      </div> -->
 
      <!--BOTTOM BAR-->
-    <div class="w-full h-32 bg-stone-300 rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>    
+    <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>    
 
     </body>
 </html>
