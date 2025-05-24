@@ -7,10 +7,10 @@
         @vite(['resources/css/login.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#1E1E1E] text-[#F4EBD9] min-h-screen relative overflow-hidden">
-       
+
         <!-- TOP BAR -->
         <div class="w-full h-32 px-8 py-4 bg-[#D2C5A5] rounded-bl-[72px] rounded-br-[72px] flex items-end">
-            <a href="/login" class="flex items-center gap-2 text-zinc-800 text-base font-bold font-['Istok_Web']">
+            <a href="{{ route('login') }}" class="flex items-center gap-2 text-zinc-800 text-base font-bold font-['Istok_Web']">
                 <!-- Arrow -->
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -27,7 +27,7 @@
           <!-- FORGOT PASSWORD INSTRUCTIONS -->
         <h1 class="text-left text-3xl font-bold text-[#ECE3D2] font-['Istok_Web']">Forgot Password?</h1>
         <p class="text-left text-base font-normal text-[#FFFFFF] font-['Istok_Web'] mb-12">
-            Enter the email associated with your account 
+            Enter the email associated with your account
             and we’ll send a password reset link to your email to reset your password.</p>
 
             @if(session('status'))
@@ -74,7 +74,7 @@
          </div>
 
              <!--BOTTOM BAR-->
-            <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div> 
-       
+            <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>
+
     </body>
-</html> 
+</html>
