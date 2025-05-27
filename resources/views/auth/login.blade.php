@@ -17,7 +17,7 @@
         </div>
 
     <!-- WELCOME BACK -->
-        <h1 class="text-center text-3xl font-bold text-stone-200 font-['Istok_Web'] mt-16 mb-4">Welcome Back!</h1>
+        <h1 class="text-center text-3xl font-bold text-stone-200 font-['Istok_Web'] mt-16 mb-1.5">Welcome Back!</h1>
 
     <!-- LOGIN FORM WRAPPER -->
      <div class="flex justify-center">
