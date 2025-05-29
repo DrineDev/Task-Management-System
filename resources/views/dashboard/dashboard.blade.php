@@ -5,41 +5,37 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
         <title>dashboard</title>
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
     </head>
     <body>
-     <!-- TOP BAR -->
-    <div class="w-full h-32 px-8 py-4 bg-[#D2C5A5] rounded-bl-[72px] rounded-br-[72px] flex items-center justify-between">
-        <div class="flex items-center">
-            <div class="w-20 h-20 rounded-full overflow-hidden">
-                <img src="https://scontent.fceb5-1.fna.fbcdn.net/v/t1.15752-9/494691149_1210378300185800_1251328112097693854_n.png?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFXKITHiyuCpIfzfDxcS4uRa_MhWbjLagJr8yFZuMtqAhip9fubz25PYlenTJBdUsvf4VUDaVSickdElvZeuh5p&_nc_ohc=ns0brLQtLRgQ7kNvwEP32KB&_nc_oc=Adnj59VG1ltNRLdgb2PQU5pZf2VP4k8XBTXvuwNsl2rVkwaEwtP4LRMwR1NFoe8KhIQ&_nc_zt=23&_nc_ht=scontent.fceb5-1.fna&oh=03_Q7cD2QFbj5GEZqig7KO5FHZirrcHz1-q3-_XaMrcHdtR5_hMdA&oe=685F4105" alt="User Avatar" class="w-full h-full object-cover">
-            </div>
-            <div class="ml-3">
-                <h2 class="text-[40px] font-semibold text-[#2F2D2A]">Jarod Rebalde</h2>
-                <p class="text-[16px] text-[#2F2D2A]">Welcome Back</p>
-            </div>
-        </div>
-        <button class="w-20 h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-        </svg>
-        </button>
-    </div>
+<!-- ------------------------------- TOP BAR ------------------------------- -->
 
-    <!-- ----------------------------- Dashboard Main --------------------------- -->
-<! --------------------------------- SEARCH --------------------------------- -->
-    <!-- <div class="grid grid-cols-2 grid-rows-1 gap-1">
-   <div class="m-6 mx-11 w-fit p-2 flex items-center justify-start text-stone-900/50 text-xl font-bold font-['Inter']">
-    <input type="search" class="w-[470px] h-11 bg-stone-200 rounded-xl" placeholder="Search...">
-<button class="ml-3 flex items-center bg-[#C7B89B] p-2 rounded-md hover:bg-[#7c6e5b] transition-colors ease-in-out">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#3D3D3D" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-        </svg>
-</button>
+<div class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-bl-[36px] md:rounded-bl-[72px] rounded-br-[36px] md:rounded-br-[72px] flex items-center justify-between">
+    <div class="flex items-center">
+        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden">
+            <img src="https://scontent.fceb5-1.fna.fbcdn.net/v/t1.15752-9/494691149_1210378300185800_1251328112097693854_n.png?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFXKITHiyuCpIfzfDxcS4uRa_MhWbjLagJr8yFZuMtqAhip9fubz25PYlenTJBdUsvf4VUDaVSickdElvZeuh5p&_nc_ohc=ns0brLQtLRgQ7kNvwEP32KB&_nc_oc=Adnj59VG1ltNRLdgb2PQU5pZf2VP4k8XBTXvuwNsl2rVkwaEwtP4LRMwR1NFoe8KhIQ&_nc_zt=23&_nc_ht=scontent.fceb5-1.fna&oh=03_Q7cD2QFbj5GEZqig7KO5FHZirrcHz1-q3-_XaMrcHdtR5_hMdA&oe=685F4105" alt="User Avatar" class="w-full h-full object-cover">
+        </div>
+        <div class="ml-3">
+            <h2 class="text-[24px] md:text-[40px] font-semibold text-[#2F2D2A]">Jarod Rebalde</h2>
+            <p class="text-[12px] md:text-[16px] text-[#2F2D2A]">Welcome Back</p>
+        </div>
     </div>
-    </div> -->
+    <button class="w-16 h-16 md:w-20 md:h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 md:size-10">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+    </svg>
+    </button>
+</div>
+
+<!-- ----------------------------------------------------------------------- -->
+<!--                             DASHBOARD MAIN                              -->
+<!-- ----------------------------------------------------------------------- -->
 
     <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9">
 <!-- ------------------------------- SEARCH -------------------------------- -->
@@ -221,7 +217,6 @@
                 <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
             </button>
         </footer>
-    </div>
 
 
 <!-- ------------------------------- SCRIPT -------------------------------- -->
