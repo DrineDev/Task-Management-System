@@ -206,17 +206,83 @@
         </main>
 
 
+
   <footer class="fixed bottom-0 left-0 right-0 w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
             <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-user text-[40px] mb-1"></i>
             </button>
-            <button class="w-28 h-28 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+            <button id="addbutton" class="w-28 h-28 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
                 <i class="fas fa-plus"></i>
             </button>
             <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
             </button>
         </footer>
+
+<!-- ------------------------------- ADD TASK MODAL ------------------------------- -->
+
+<div id="addTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+            <button id="closeAddTaskModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
+                <i class="fas fa-arrow-left text-xl"></i> Back
+            </button>
+            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Create New Task</h2>
+            <div></div> </div>
+
+        <div class="space-y-4">
+            <div>
+                <label for="taskTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Title</label>
+                <input type="text" id="taskTitle" placeholder="Write Here"
+                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+            </div>
+            <div>
+                <label for="taskDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Description</label>
+                <textarea id="taskDescription" placeholder="Write Here"
+                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="startDate" class="block text-[#C7B89B] text-sm font-bold mb-2">Start Date</label>
+                    <div class="relative">
+                        <input type="date" id="startDate"
+                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+                    </div>
+                </div>
+                <div>
+                    <label for="endDate" class="block text-[#C7B89B] text-sm font-bold mb-2">End Date</label>
+                    <div class="relative">
+                        <input type="date" id="endDate"
+                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Category</label>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">+</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Work</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
+                    </div>
+            </div>
+            <div>
+                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i>
+                    Low</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-equals mr-1"></i> Normal</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-exclamation mr-1"></i> High</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
+                Create Task
+            </button>
+        </div>
+    </div>
+</div>
 
 
 <!-- ------------------------------- SCRIPT -------------------------------- -->
@@ -307,6 +373,30 @@
 
         // Initial render of the calendar
         renderCalendar(currentDate);
+
+         const openAddTaskModalBtn = document.getElementById('addbutton');
+    const closeAddTaskModalBtn = document.getElementById('closeAddTaskModal');
+    const addTaskModal = document.getElementById('addTaskModal');
+
+    if (openAddTaskModalBtn) {
+        openAddTaskModalBtn.addEventListener('click', () => {
+            addTaskModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeAddTaskModalBtn) {
+        closeAddTaskModalBtn.addEventListener('click', () => {
+            addTaskModal.classList.add('hidden');
+        });
+    }
+
+    // Close modal if clicked outside
+    window.addEventListener('click', (event) => {
+        if (event.target === addTaskModal) {
+            addTaskModal.classList.add('hidden');
+        }
+    });
+
 
         lucide.replace();
     </script>
