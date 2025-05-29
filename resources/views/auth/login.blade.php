@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login - Task Management System</title>
-        @vite(['resources/css/login.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#1E1E1E] text-[#F4EBD9] min-h-screen relative overflow-hidden">
 
