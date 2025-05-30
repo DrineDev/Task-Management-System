@@ -17,5 +17,24 @@ export default {
         },
     },
 
+    extend: {
+  colors: {
+    threadGold: '#fcd34d',
+    emberRose: '#fb7185',
+    fatePink: '#f9a8d4',
+    ashBlack: '#0a0a0a',
+    parchmentIvory: '#fef9f5',
+    sunbeam: '#fde68a',
+    lightGlow: '#fffacc',
+  },
+  fontFamily: {
+    display: ['"Playfair Display"', 'serif'],
+    body: ['"Inter"', 'sans-serif'],
+    lore: ['"EB Garamond"', 'serif'],
+    regal: ['"Cormorant Garamond"', 'serif'],
+  },
+},
+
+
     plugins: [forms],
 };

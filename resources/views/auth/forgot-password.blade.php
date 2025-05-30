@@ -73,8 +73,8 @@
             </div>
          </div>
 
-             <!--BOTTOM BAR-->
-            <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>
+             <!-- BOTTOM BAR -->
+    <div class="w-full h-24 sm:h-32 bg-[#D2C5A5] rounded-tl-[48px] rounded-tr-[48px] fixed bottom-0 left-0 right-0 z-10"></div>
 
     </body>
 </html>

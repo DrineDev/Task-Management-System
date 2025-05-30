@@ -8,20 +8,21 @@
     </head>
     <body class="bg-[#1E1E1E] text-[#F4EBD9] min-h-screen relative overflow-hidden">
 
-     <!-- TOP BAR -->
-        <div class="w-full h-32 px-8 py-4 bg-[#D2C5A5] rounded-bl-[72px] rounded-br-[72px] inline-flex flex-col justify-end items-center gap-2.5">
-            <div class="w-44 inline-flex justify-between items-center">
-                <a href="/register" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web'] underline">Sign Up</a>
-                <a href="/login" class="justify-start text-zinc-800 text-base font-bold font-['Istok_Web']">Log In</a>
-            </div>
-        </div>
+    <!-- TOP BAR -->
+<div class="w-full px-6 py-4 bg-[#D2C5A5] rounded-bl-[48px] rounded-br-[48px] flex flex-col justify-end items-center sm:h-32 h-24">
+  <div class="w-full max-w-sm flex flex-col sm:flex-row justify-between items-center gap-2">
+    <a href="/register" class="text-zinc-800 text-sm sm:text-base font-bold font-['Istok_Web'] underline">Sign Up</a>
+    <a href="/login" class="text-zinc-800 text-sm sm:text-base font-bold font-['Istok_Web']">Log In</a>
+  </div>
+</div>
 
+    
        <!-- CREATE AN ACCOUNT -->
-        <h1 class="text-center text-3xl font-bold text-stone-200 font-['Istok_Web'] mt-16 mb-1.5">Create An Account</h1>
+        <h1 class="text-center text-2xl sm:text-3x1 font-bold text-stone-200 font-['Istok_Web'] mt-8 mb-1.5">Create An Account</h1>
 
         <!-- SIGN UP FORM WRAPPER -->
-     <div class="flex justify-center">
-         <div class="bg-[#26231F] p-10 rounded-xl shadow-lg w-full max-w-md">
+     <div class="flex justify-center px-4 pt-8 pb-40 sm:pb-52 overflow-y-auto">
+         <div class="bg-[#26231F] p-6 sm:p-10 rounded-xl shadow-lg w-full max-w-md">
 
              @if(session('success'))
                 <div>{{ session('success') }}</div>
@@ -44,7 +45,7 @@
 
             <div>
                 <label for="email" class="block text-left pb-3.5">Email</label>
-                <input class="bg-stone-200 rounded-xl px-4 py-2 w-full" id="email" type="email" name="email" value="{{ old('email') }}" required>
+                <input class="bg-stone-200 rounded-xl px-4 py-2 w-full text-sm sm:text-based" id="email" type="email" name="email" value="{{ old('email') }}" required>
                 @error('email')
                     <div>{{ $message }}</div>
                 @enderror
@@ -52,7 +53,7 @@
 
             <div>
                 <label for="password" class="block text-left pb-3.5">Password</label>
-                <input class="pb-12" id="password" type="password" name="password" required>
+                <input class="pb-12 text-sm sm:text-based" id="password" type="password" name="password" required>
                 @error('password')
                     <div>{{ $message }}</div>
                 @enderror
@@ -75,7 +76,7 @@
         @endif
          </div> -->
 
-          <div class="flex items-center gap-3 pt-5">
+          <div class="flex flex-col sm:flex-row items-center gap-3 pt-5">
                     <div class="flex-grow border-t border-white"></div>
                     <div class="text-white text-xs font-normal font-['Istok_Web']">or sign in with</div>
                     <div class="flex-grow border-t border-white"></div>
@@ -102,8 +103,9 @@
         </div>
         </div>
 
-         <!--BOTTOM BAR-->
-    <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>
+        <!-- BOTTOM BAR -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#D2C5A5] z-10 rounded-tl-[48px] rounded-tr-[48px] h-20 sm:h-28 pb-[env(safe-area-inset-bottom)]"></footer>
+
 
     </body>
 </html>
