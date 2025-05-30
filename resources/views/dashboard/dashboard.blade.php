@@ -8,7 +8,10 @@
 </head>
 <body>
     <div id="app">
-        <h1>My Todo List</h1>
+        <div class="header">
+            <h1>My Todo List</h1>
+            <a href="{{ route('profile.show') }}" class="profile-button">Profile</a>
+        </div>
 
         <!-- Add Task Form -->
         <div>
