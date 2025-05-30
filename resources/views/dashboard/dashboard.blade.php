@@ -679,5 +679,3 @@ if (confirmDeleteBtn) {
 </body>
 
 </html>
-
-

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Auth; // Correct namespace for this file location
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller; // Base controller
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
-class RegisterController extends Controller // Extends the base Controller
+class RegisterController extends Controller
 {
     /**
      * Display the registration form.
@@ -25,20 +26,29 @@ class RegisterController extends Controller // Extends the base Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        $emailExists = DB::table('auth.users')->where('email', $request->email)->exists();
+
+        if ($emailExists) {
+            return redirect()->back()
+                ->withErrors(['email' => 'The email has already been taken.'])
+                ->withInput();
+        }
+
         if ($validator->fails()) {
             return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $supabaseUrl = config('services.supabase.url');
         $supabaseAnonKey = config('services.supabase.anon_key');
+        $supabaseKey = config('services.supabase.key');
 
-        if (!$supabaseUrl || !$supabaseAnonKey) {
+        if (!$supabaseUrl || !$supabaseAnonKey || !$supabaseKey) {
             Log::error('Supabase credentials missing in config/services.php or .env file.');
             return redirect()->back()->with('error', 'Supabase credentials are not configured correctly. Please contact support.')->withInput();
         }
@@ -46,21 +56,35 @@ class RegisterController extends Controller // Extends the base Controller
         $authUrl = $supabaseUrl . '/auth/v1/signup';
 
         try {
+            // Register the user in Supabase Auth using anon key
             $response = Http::withHeaders([
                 'apikey' => $supabaseAnonKey,
                 'Content-Type' => 'application/json',
             ])->post($authUrl, [
                 'email' => $request->email,
                 'password' => $request->password,
-                'data' => [ // Optional: Additional user metadata for Supabase
-                    'full_name' => $request->name,
-                ]
             ]);
 
             if ($response->successful()) {
-                // $responseData = $response->json();
-                // Supabase returns user details. If email confirmation is enabled,
-                // user needs to confirm before logging in.
+                $userData = $response->json();
+                
+                // Create user profile in Supabase using service role key
+                $profileResponse = Http::withHeaders([
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey,
+                    'Content-Type' => 'application/json',
+                ])->post($supabaseUrl . '/rest/v1/user_profiles', [
+                    'id' => $userData['user']['id'],
+                    'name' => $request->name,
+                ]);
+
+                if (!$profileResponse->successful()) {
+                    Log::error('Failed to create user profile in Supabase', [
+                        'status' => $profileResponse->status(),
+                        'response' => $profileResponse->json()
+                    ]);
+                }
+
                 return redirect('/')->with('success', 'Registration successful! Please check your email if confirmation is required.');
             } else {
                 $errorData = $response->json();

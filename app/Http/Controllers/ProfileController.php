@@ -1,0 +1,225 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\UserProfile;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class ProfileController extends Controller
+{
+    /**
+     * Show the user profile page
+     */
+    public function show()
+    {
+        $user = auth()->user();
+        $profile = null;
+
+        try {
+            Log::info('Fetching profile for user', [
+                'user_id' => $user->id,
+                'user_email' => $user->email
+            ]);
+
+            // Use the correct endpoint for public schema
+            $response = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+                'Prefer' => 'return=representation'
+            ])->get(config('services.supabase.url') . '/rest/v1/user_profiles', [
+                'id' => 'eq.' . $user->id,
+                'select' => 'id,name,avatar_url'
+            ]);
+
+            Log::info('Supabase response', [
+                'status' => $response->status(),
+                'body' => $response->json(),
+                'url' => config('services.supabase.url') . '/rest/v1/user_profiles'
+            ]);
+
+            if ($response->successful() && !empty($response->json())) {
+                $profile = $response->json()[0];
+                Log::info('Profile found', ['profile' => $profile]);
+            } else {
+                Log::warning('No profile found or unsuccessful response', [
+                    'status' => $response->status(),
+                    'body' => $response->json()
+                ]);
+
+                // Try to create the profile if it doesn't exist
+                $createResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                    'Content-Type' => 'application/json',
+                    'Prefer' => 'return=representation'
+                ])->post(config('services.supabase.url') . '/rest/v1/user_profiles', [
+                    'id' => $user->id,
+                    'name' => $user->email
+                ]);
+
+                if ($createResponse->successful()) {
+                    $profile = $createResponse->json()[0];
+                    Log::info('Profile created successfully', ['profile' => $profile]);
+                } else {
+                    Log::error('Failed to create profile', [
+                        'status' => $createResponse->status(),
+                        'body' => $createResponse->json()
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch user profile: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+        }
+
+        return view('profile.profile', compact('user', 'profile'));
+    }
+
+    /**
+     * Update the user's profile information
+     */
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            $user = Auth::user();
+            
+            // Get current profile data
+            $currentProfileResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/user_profiles', [
+                'id' => 'eq.' . $user->id
+            ]);
+
+            if (!$currentProfileResponse->successful() || empty($currentProfileResponse->json())) {
+                return back()->withErrors(['profile' => 'Failed to fetch current profile. Please try again.']);
+            }
+
+            $currentProfile = $currentProfileResponse->json()[0];
+            $updateData = [];
+
+            // Only include fields that have changed
+            if ($request->filled('name') && $request->name !== $currentProfile['name']) {
+                $updateData['name'] = $request->name;
+            }
+            if ($request->filled('avatar_url') && $request->avatar_url !== $currentProfile['avatar_url']) {
+                $updateData['avatar_url'] = $request->avatar_url;
+            }
+
+            // If nothing has changed, return success
+            if (empty($updateData)) {
+                return redirect()->route('profile.show')
+                    ->with('success', 'No changes were made.');
+            }
+
+            // Update profile in Supabase using service role key
+            $response = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+                'Prefer' => 'return=representation'
+            ])->patch(config('services.supabase.url') . '/rest/v1/user_profiles?id=eq.' . $user->id, $updateData);
+
+            if ($response->successful()) {
+                return redirect()->route('profile.show')
+                    ->with('success', 'Profile updated successfully.');
+            }
+
+            Log::error('Failed to update profile in Supabase', [
+                'status' => $response->status(),
+                'response' => $response->json(),
+                'updateData' => $updateData
+            ]);
+
+            return back()->withErrors(['profile' => 'Failed to update profile. Please try again.']);
+        } catch (\Exception $e) {
+            Log::error('Exception while updating profile', [
+                'message' => $e->getMessage()
+            ]);
+
+            return back()->withErrors(['profile' => 'An error occurred. Please try again later.']);
+        }
+    }
+
+    /**
+     * Show change password form (if you want to add this functionality)
+     */
+    public function showChangePassword()
+    {
+        return view('profile.change-password');
+    }
+
+    /**
+     * Update user password
+     */
+    public function updatePassword(Request $request)
+    {
+        // Add password update logic here
+        return redirect()->route('profile.show')->with('success', 'Password updated successfully');
+    }
+
+    /**
+     * Handle user logout
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('success', 'You have been logged out successfully.');
+    }
+
+    public function index()
+    {
+        return view('profile.profile');
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'current_email' => ['required', 'email', 'current_password'],
+            'new_email' => ['required', 'email', 'different:current_email', 'confirmed'],
+        ]);
+
+        $user = auth()->user();
+
+        try {
+            // Update email in Supabase Auth
+            $response = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key')
+            ])->put(config('services.supabase.url') . '/auth/v1/admin/users/' . $user->id, [
+                'email' => $request->new_email
+            ]);
+
+            if ($response->successful()) {
+                // Update email in Laravel's auth
+                $user->email = $request->new_email;
+                $user->save();
+
+                return redirect()->route('profile.show')->with('success', 'Email updated successfully.');
+            } else {
+                Log::error('Failed to update email in Supabase: ' . $response->body());
+                return redirect()->route('profile.show')->with('error', 'Failed to update email. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating email: ' . $e->getMessage());
+            return redirect()->route('profile.show')->with('error', 'An error occurred while updating your email.');
+        }
+    }
+}
