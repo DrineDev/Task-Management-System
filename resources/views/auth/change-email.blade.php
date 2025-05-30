@@ -1,8 +1,3 @@
-<?php
-$profilePicture = 'jarodpfp.png';
-$name = 'Jarod Rebalde';
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
