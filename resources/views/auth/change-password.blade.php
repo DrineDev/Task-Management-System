@@ -17,18 +17,14 @@
 
     .main-container {
       background-color: #2F2D2A;
-      box-shadow: 10px 10px 25px rgba(0,0,0,0.6), -10px 10px 25px rgba(0,0,0,0.6), 0 10px 25px rgba(0,0,0,0.6);
+      box-shadow: 15px 15px 30px rgba(0,0,0,0.8), -15px 15px 30px rgba(0,0,0,0.6), 0 20px 30px rgba(0,0,0,0.7);
     }
 
     .header, .footer {
       background-color: #D2C5A5;
     }
 
-    .info-box {
-      background-color: #D2C5A5;
-    }
-
-    .control-box, .input-box {
+    .info-box, .control-box, .input-box {
       background-color: #D2C5A5;
     }
 
@@ -59,20 +55,26 @@
   </header>
 
   <main class="main-container flex-grow flex items-center justify-center p-4 md:p-6">
-    <div class="flex flex-col md:flex-row max-w-6xl w-full rounded-xl shadow-2xl text-black bg-[#2F2D2A] gap-6 md:gap-10 p-4">
+    <div class="flex flex-col md:flex-row max-w-6xl w-full rounded-xl text-black bg-[#2F2D2A] gap-6 md:gap-10 p-4">
 
       <div class="md:w-1/3 w-full flex flex-col items-center justify-center pb-4 md:pb-0">
-        <img src="{{ $user->avatar_url ?? 'default-avatar.png' }}" alt="Profile Picture" class="rounded-xl w-56 md:w-80 h-auto mb-4">
-        <h2 class="text-white text-4xl md:text-5xl font-semibold text-center">{{ $user->name }}</h2>
+        <img src="{{ is_array($profile) ? ($profile['avatar_url'] ?? 'default-avatar.png') : ($profile->avatar_url ?? 'default-avatar.png') }}" alt="Profile Picture" class="rounded-xl w-60 md:w-80 h-auto mb-5">
+        <h2 class="text-white text-4xl md:text-5xl font-semibold text-center">{{ is_array($profile) ? $profile['name'] : ($profile->name ?? $user->email) }}</h2>
       </div>
 
       <div class="md:w-2/3 w-full text-white">
         <div class="mb-4">
-          <h3 class="text-3xl md:text-4xl font-bold mb-4">Change Password</h3>
+          <h3 class="text-3xl md:text-4xl font-bold mb-6">Change Password</h3>
 
           @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
               <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+          @endif
+
+          @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <span class="block sm:inline">{{ session('error') }}</span>
             </div>
           @endif
 
@@ -86,27 +88,34 @@
             </div>
           @endif
 
-          <form method="POST" action="{{ route('change-password.update') }}" class="space-y-4">
+          <form action="{{ route('change-password.update') }}" method="POST">
             @csrf
-            <div class="input-box p-4 rounded-lg">
+            @method('PUT')
+            <div class="input-box p-4 mb-3 rounded-lg">
               <label for="current_password" class="block text-sm font-semibold mb-1">Current Password</label>
-              <input type="password" id="current_password" name="current_password" class="w-full px-3 py-2 rounded border border-gray-300" required>
+              <input type="password" id="current_password" name="current_password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
             </div>
 
-            <div class="input-box p-4 rounded-lg">
+            <div class="input-box p-4 mb-3 rounded-lg">
               <label for="password" class="block text-sm font-semibold mb-1">New Password</label>
-              <input type="password" id="password" name="password" class="w-full px-3 py-2 rounded border border-gray-300" required>
+              <input type="password" id="password" name="password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
             </div>
 
-            <div class="input-box p-4 rounded-lg">
+            <div class="input-box p-4 mb-3 rounded-lg">
               <label for="password_confirmation" class="block text-sm font-semibold mb-1">Confirm New Password</label>
-              <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 rounded border border-gray-300" required>
+              <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
             </div>
 
             <div class="text-right">
               <button type="submit" class="confirm-button px-4 py-2 rounded text-sm">Update Password</button>
             </div>
           </form>
+
+          <div class="mt-8">
+            <a href="{{ route('profile.show') }}" class="control-box p-4 rounded-lg text-left text-black w-full inline-block">
+              Back to Profile
+            </a>
+          </div>
         </div>
       </div>
 

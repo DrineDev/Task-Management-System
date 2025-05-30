@@ -43,10 +43,12 @@ class RegisterController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
         $supabaseUrl = config('services.supabase.url');
         $supabaseAnonKey = config('services.supabase.anon_key');
+        $supabaseKey = config('services.supabase.key');
 
-        if (!$supabaseUrl || !$supabaseAnonKey) {
+        if (!$supabaseUrl || !$supabaseAnonKey || !$supabaseKey) {
             Log::error('Supabase credentials missing in config/services.php or .env file.');
             return redirect()->back()->with('error', 'Supabase credentials are not configured correctly. Please contact support.')->withInput();
         }
@@ -54,18 +56,35 @@ class RegisterController extends Controller
         $authUrl = $supabaseUrl . '/auth/v1/signup';
 
         try {
+            // Register the user in Supabase Auth using anon key
             $response = Http::withHeaders([
                 'apikey' => $supabaseAnonKey,
                 'Content-Type' => 'application/json',
             ])->post($authUrl, [
                 'email' => $request->email,
                 'password' => $request->password,
-                'data' => [
-                    'full_name' => $request->name,
-                ]
             ]);
 
             if ($response->successful()) {
+                $userData = $response->json();
+                
+                // Create user profile in Supabase using service role key
+                $profileResponse = Http::withHeaders([
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey,
+                    'Content-Type' => 'application/json',
+                ])->post($supabaseUrl . '/rest/v1/user_profiles', [
+                    'id' => $userData['user']['id'],
+                    'name' => $request->name,
+                ]);
+
+                if (!$profileResponse->successful()) {
+                    Log::error('Failed to create user profile in Supabase', [
+                        'status' => $profileResponse->status(),
+                        'response' => $profileResponse->json()
+                    ]);
+                }
+
                 return redirect('/')->with('success', 'Registration successful! Please check your email if confirmation is required.');
             } else {
                 $errorData = $response->json();
