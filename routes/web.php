@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\Auth\ChangeEmailController;
 use App\Http\Middleware\SupabaseAuth;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,12 +48,16 @@ Route::middleware(['web', SupabaseAuth::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile Routes
-    Route::get('/profile', [ProfileController::class, 'showProfile'])->name('profile.show');
-    Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     
-    // Password Change Routes
-    Route::get('/change-password', [ChangePasswordController::class, 'showChangePassword'])->name('change-password');
-    Route::post('/change-password', [ChangePasswordController::class, 'updatePassword'])->name('change-password.update');
+    // Email change routes
+    Route::get('/change-email', [ChangeEmailController::class, 'show'])->name('change-email.show');
+    Route::put('/change-email', [ChangeEmailController::class, 'update'])->name('change-email.update');
+    
+    // Password change routes
+    Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password.show');
+    Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
 
     // Tasks
     Route::resource('/tasks', TaskController::class);

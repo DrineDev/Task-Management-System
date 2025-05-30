@@ -42,10 +42,15 @@ class LoginController extends Controller
         }
 
         //3. Prepare for Supabase API request
-        //Endpoint for token-based login (password grant)
+        //Endpoint for password-based login with grant type
         $authUrl = $supabaseUrl . '/auth/v1/token?grant_type=password';
 
         try{
+            Log::info('Attempting Supabase login', [
+                'url' => $authUrl,
+                'email' => $request->email
+            ]);
+
             //Make POST request
             $response = Http::withHeaders([
                 'apikey' => $supabaseAnonKey,
@@ -53,6 +58,11 @@ class LoginController extends Controller
             ])->post($authUrl, [
                 'email' => $request->email,
                 'password' => $request->password,
+            ]);
+
+            Log::info('Supabase login response', [
+                'status' => $response->status(),
+                'body' => $response->json()
             ]);
 
             //4. Handle supabase API response
@@ -79,15 +89,19 @@ class LoginController extends Controller
                 $errorData = $response->json();
                 $errorMessage = $errorData['error_description'] ?? ($errorData['message'] ?? 'Invalid login credentials or user does not exist.');
 
-                Log::warning('Supabase login failed for email: ' . $request->email . ' - Supabase Error: ' . $errorMessage, ['response_body' => $errorData]);
+                Log::warning('Supabase login failed for email: ' . $request->email . ' - Supabase Error: ' . $errorMessage, [
+                    'response_body' => $errorData,
+                    'status_code' => $response->status()
+                ]);
                 return redirect()->back()->with('error', $errorMessage)->withInput();
-
             }
-        } catch(\Illuminate\Http\Client\ConnectionException $e){
-            Log::error('Supabase connection error during login: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Could not connect to authentication service. Please try again later.')->withInput();
         } catch(\Exception $e){
-            Log::error('General error during Supabase login: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('General error during Supabase login', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'url' => $authUrl,
+                'email' => $request->email
+            ]);
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again')->withInput();
         }
     }
@@ -113,7 +127,6 @@ class LoginController extends Controller
         $request->session()->forget(['supabase_user', 'supabase_access_token', 'supabase_refresh_token', 'supabase_token_expires_at']);
 
         //3. Invalidate the entire Laravel session and regenerat CSRF token
-
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

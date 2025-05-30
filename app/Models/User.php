@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
@@ -38,8 +39,6 @@ class User extends Authenticatable
     protected $fillable = [
         'id',
         'email',
-        'name',
-        'avatar_url',
     ];
 
     /**
@@ -63,8 +62,6 @@ class User extends Authenticatable
         return new static([
             'id' => $supabaseUser['id'],
             'email' => $supabaseUser['email'],
-            'name' => $supabaseUser['user_metadata']['name'] ?? $supabaseUser['email'],
-            'avatar_url' => $supabaseUser['user_metadata']['avatar_url'] ?? null,
         ]);
     }
 
@@ -129,6 +126,17 @@ class User extends Authenticatable
         return '';
     }
 
+    /**
+     * Get the user's profile.
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(UserProfile::class, 'id', 'id');
+    }
+
+    /**
+     * Get the tasks for the user.
+     */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
