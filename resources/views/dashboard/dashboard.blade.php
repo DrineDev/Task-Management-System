@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     </head>
-    <body>
+    <body class="overflow-x-hidden">
 <!-- ------------------------------- TOP BAR ------------------------------- -->
 
 <div class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-bl-[36px] md:rounded-bl-[72px] rounded-br-[36px] md:rounded-br-[72px] flex items-center justify-between">
@@ -33,7 +33,7 @@
 <!--                             DASHBOARD MAIN                              -->
 <!-- ----------------------------------------------------------------------- -->
 
-    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9 pb-32 md:pb-32">
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9 min-h-[calc(100vh-7rem)] overflow-y-auto">
 <!-- ------------------------------- SEARCH -------------------------------- -->
             <div class="md:col-span-2 space-y-6 md:space-y-5">
                 <div class="flex items-center">
@@ -162,6 +162,45 @@
                                     </div>
                                 </div>
                             </div>
+                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
+                                <div>
+                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
+                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
+                                <div>
+                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
+                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
+                                <div>
+                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
+                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -224,7 +263,7 @@
 
 <!-- ------------------------------- NAVBAR -------------------------------- -->
 
-  <footer class="fixed bottom-0 left-0 right-0 w-full h-32 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
+  <footer class="fixed bottom-0 left-0 right-0 w-full h-28 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg pointer-events-auto">
             <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-user text-[40px] mb-1"></i>
             </button>
@@ -429,6 +468,19 @@
     </div>
 </div>
 
+
+<!-- --------------------------- CONFIRM DELETE MODAL --------------------------- -->
+<div id="confirmDeleteModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-[90vw] max-w-xs md:max-w-sm text-center">
+        <h2 class="text-[24px] font-semibold text-[#D2C5A5] mb-4">Confirm Delete</h2>
+        <p class="text-[#C7B89B] mb-8">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <div class="flex justify-center space-x-4">
+            <button id="cancelDeleteBtn" class="bg-[#C7B89B] text-[#2D2A2A] rounded-xl px-6 py-2 font-bold hover:bg-[#B8A98B]">Cancel</button>
+            <button id="confirmDeleteBtn" class="bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700">Delete</button>
+        </div>
+    </div>
+</div>
+
 <!-- ----------------------------------------------------------------------- -->
 <!--                                 SCRIPT -------------------------------- -->
      <script>
@@ -583,22 +635,45 @@
         openModal(editTaskModal);
     }
 
-    function deleteTask() {
-        alert("Delete task functionality will be implemented here.");
-        //  Replace this with your actual delete task logic
-    }
+    let deleteAction = null;
 
-    function EditProject() {
-        openModal(editProjectModal);
+function openConfirmDeleteModal(action) {
+    deleteAction = action;
+    openModal(document.getElementById('confirmDeleteModal'));
+}
+
+function closeConfirmDeleteModal() {
+    closeModal(document.getElementById('confirmDeleteModal'));
+    deleteAction = null;
+}
+
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+if (cancelDeleteBtn) {
+    cancelDeleteBtn.addEventListener('click', closeConfirmDeleteModal);
+}
+if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (typeof deleteAction === 'function') {
+            deleteAction();
+        }
+        closeConfirmDeleteModal();
+    });
+}
+
+    function deleteTask() {
+        openConfirmDeleteModal(function() {
+            alert("Task deleted!");
+            // Place your actual delete logic here
+        });
     }
 
     function deleteProject() {
-        alert("Delete task functionality will be implemented here.");
-        //  Replace this with your actual delete task logic
-    }
-
-    if (closeEditProjectModal) {
-        closeEditProjectModal.addEventListener('click', closeEditProjectModalFunc);
+        openConfirmDeleteModal(function() {
+            alert("Project deleted!");
+            // Place your actual delete logic here
+        });
     }
     </script>
 </body>
