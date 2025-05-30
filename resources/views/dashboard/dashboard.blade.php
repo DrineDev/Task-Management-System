@@ -7,10 +7,6 @@
         <title>dashboard</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
     </head>
     <body>
@@ -103,8 +99,8 @@
                                  <div class="relative">
                                     <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
                                     <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -116,8 +112,8 @@
                                  <div class="relative">
                                     <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
                                     <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -129,21 +125,8 @@
                                  <div class="relative">
                                     <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
                                     <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="font-semibold">Project name</p>
-                                    <p class="text-gray-400 text-sm">No task</p>
-                                </div>
-                                 <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -161,20 +144,7 @@
                                  <div class="relative">
                                     <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
                                     <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                               <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button id="openEditTaskModalBtn" class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
                                         <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
                                     </div>
                                 </div>
@@ -272,7 +242,6 @@
 
 
 <!-- ------------------------------- ADD TASK MODAL ------------------------------- -->
-
 <div id="addTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
     <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
         <div class="flex items-center justify-between mb-6">
@@ -336,6 +305,7 @@
     </div>
 </div>
 
+
 <!-- ------------------------------- ADD PROJECT MODAL ------------------------------- -->
 
 <div id="addProjectModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
@@ -367,11 +337,100 @@
     </div>
 </div>
 
+<!-- --------------------------- EDIT TASK MODAL --------------------------- -->
+<div id="editTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+            <button id="closeEditTaskModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
+                <i class="fas fa-arrow-left text-xl"></i> Back
+            </button>
+            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Edit Task</h2>
+            <div></div>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label for="editTaskTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Change Title</label>
+                <input type="text" id="editTaskTitle" placeholder="Write Here"
+                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+            </div>
+            <div>
+                <label for="editTaskDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Change Description</label>
+                <textarea id="editTaskDescription" placeholder="Write Here"
+                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="editStartDate" class="block text-[#C7B89B] text-sm font-bold mb-2">Start Date</label>
+                    <div class="relative">
+                        <input type="date" id="editStartDate"
+                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+                    </div>
+                </div>
+                <div>
+                    <label for="editEndDate" class="block text-[#C7B89B] text-sm font-bold mb-2">End Date</label>
+                    <div class="relative">
+                        <input type="date" id="editEndDate"
+                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Change Category</label>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">+</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Work</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i> Low</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-equals mr-1"></i> Normal</button>
+                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-exclamation mr-1"></i> High</button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8">
+            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
 
+<!-- --------------------------- EDIT PROJECT MODAL --------------------------- -->
+<div id="editProjectModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#3D3D3D] rounded-3xl p-8 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+            <button id="closeEditProjectModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
+                <i class="fas fa-arrow-left text-xl"></i> Back
+            </button>
+            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Edit Project</h2>
+            <div></div>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label for="editProjectTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Title</label>
+                <input type="text" id="editProjectTitle" placeholder="Edit project title"
+                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
+            </div>
+            <div>
+                <label for="editProjectDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Description</label>
+                <textarea id="editProjectDescription" placeholder="Edit project description"
+                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
+            </div>
+        </div>
+        <div class="mt-8">
+            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
 
-
-
-<!-- ------------------------------- SCRIPT -------------------------------- -->
+<!-- ----------------------------------------------------------------------- -->
+<!--                                 SCRIPT -------------------------------- -->
      <script>
         const monthYear = document.getElementById("monthYear");
         const calendarDays = document.getElementById("calendarDays");
@@ -470,6 +529,11 @@
     const addProjectModal = document.getElementById('addProjectModal');
     const closeAddProjectModal = document.getElementById('closeAddProjectModal');
     const openAddProjectModalBtn = document.getElementById('openAddProjectModalBtn');
+    const closeEditTaskModal = document.getElementById('closeEditTaskModal');
+    const editTaskModal = document.getElementById('editTaskModal');
+    const openEditTaskModalBtn = document.getElementById('openEditTaskModalBtn');
+    const closeEditProjectModal = document.getElementById('closeEditProjectModal');
+    const editProjectModal = document.getElementById('editProjectModal');
 
     function openModal(modal) {
         modal.classList.remove('hidden');
@@ -486,6 +550,8 @@
 
     closeAddTaskModal.addEventListener('click', () => closeModal(addTaskModal));
     closeAddProjectModal.addEventListener('click', () => closeModal(addProjectModal));
+    closeEditTaskModal.addEventListener('click', () => closeModal(editTaskModal));
+    closeEditProjectModal.addEventListener('click', () => closeModal(editProjectModal));
 
 
     if (openAddProjectModalBtn) {
@@ -493,6 +559,8 @@
             openModal(addProjectModal);
         });
     }
+
+
 
     const taskSettingsIcons = document.querySelectorAll('.task-settings-icon');
 
@@ -510,9 +578,9 @@
         });
     });
 
+
     function editTask() {
-        alert("Edit task functionality will be implemented here.");
-        //  Replace this with your actual edit task logic
+        openModal(editTaskModal);
     }
 
     function deleteTask() {
@@ -520,6 +588,18 @@
         //  Replace this with your actual delete task logic
     }
 
+    function EditProject() {
+        openModal(editProjectModal);
+    }
+
+    function deleteProject() {
+        alert("Delete task functionality will be implemented here.");
+        //  Replace this with your actual delete task logic
+    }
+
+    if (closeEditProjectModal) {
+        closeEditProjectModal.addEventListener('click', closeEditProjectModalFunc);
+    }
     </script>
 </body>
 
