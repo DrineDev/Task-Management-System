@@ -37,7 +37,7 @@
 <!--                             DASHBOARD MAIN                              -->
 <!-- ----------------------------------------------------------------------- -->
 
-    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9">
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9 pb-32 md:pb-32">
 <!-- ------------------------------- SEARCH -------------------------------- -->
             <div class="md:col-span-2 space-y-6 md:space-y-5">
                 <div class="flex items-center">
@@ -100,28 +100,52 @@
                                     <p class="font-semibold">Project name</p>
                                     <p class="text-gray-400 text-sm">No task</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-gray-400 cursor-pointer"></i>
+                                 <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
                                 <div>
                                     <p class="font-semibold">Project name</p>
                                     <p class="text-gray-400 text-sm">No task</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-gray-400 cursor-pointer"></i>
+                                 <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
                                 <div>
                                     <p class="font-semibold">Project name</p>
                                     <p class="text-gray-400 text-sm">No task</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-gray-400 cursor-pointer"></i>
+                                 <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
                                 <div>
                                     <p class="font-semibold">Project name</p>
                                     <p class="text-gray-400 text-sm">No task</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-gray-400 cursor-pointer"></i>
+                                 <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -134,21 +158,39 @@
                                     <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
                                     <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
+                                 <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
                                 <div>
                                     <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
                                     <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
+                               <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
                                 <div>
                                     <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
                                     <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
                                 </div>
-                                <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
+                                <div class="relative">
+                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
+                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
+                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -212,7 +254,7 @@
 
 <!-- ------------------------------- NAVBAR -------------------------------- -->
 
-  <footer class="fixed bottom-0 left-0 right-0 w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
+  <footer class="fixed bottom-0 left-0 right-0 w-full h-32 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
             <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-user text-[40px] mb-1"></i>
             </button>
@@ -450,6 +492,32 @@
         openAddProjectModalBtn.addEventListener('click', () => {
             openModal(addProjectModal);
         });
+    }
+
+    const taskSettingsIcons = document.querySelectorAll('.task-settings-icon');
+
+    taskSettingsIcons.forEach(icon => {
+        icon.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const taskOptions = icon.nextElementSibling;
+            taskOptions.classList.toggle('hidden');
+        });
+    });
+
+    window.addEventListener('click', (event) => {
+        document.querySelectorAll('.task-options').forEach(options => {
+            options.classList.add('hidden');
+        });
+    });
+
+    function editTask() {
+        alert("Edit task functionality will be implemented here.");
+        //  Replace this with your actual edit task logic
+    }
+
+    function deleteTask() {
+        alert("Delete task functionality will be implemented here.");
+        //  Replace this with your actual delete task logic
     }
 
     </script>
