@@ -89,7 +89,7 @@
 
           <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
-            @method('PATCH')
+            @method('PUT')
 
             <div class="input-box p-4 mb-3 rounded-lg">
               <label for="name" class="block text-sm font-semibold mb-1">Display Name (Optional)</label>
