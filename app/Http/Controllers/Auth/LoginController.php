@@ -79,7 +79,7 @@ class LoginController extends Controller
                 
                 // Log the user in
                 Auth::login($user);
-                
+
                 $request->session()->regenerate();
 
                 return redirect()->intended('/dashboard')->with('success', 'Successfully Logged in!');

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Change Password</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
-  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       background-color: #2F2D2A;
@@ -18,10 +18,6 @@
     .main-container {
       background-color: #2F2D2A;
       box-shadow: 15px 15px 30px rgba(0,0,0,0.8), -15px 15px 30px rgba(0,0,0,0.6), 0 20px 30px rgba(0,0,0,0.7);
-    }
-
-    .header, .footer {
-      background-color: #D2C5A5;
     }
 
     .info-box, .control-box, .input-box {
@@ -50,15 +46,21 @@
   </style>
 </head>
 <body class="text-white">
-  <header class="header flex-shrink-0 h-20 md:h-24 rounded-b-[2rem] shadow-md flex items-center justify-center px-4">
-    <img src="logo.png" alt="Logo" class="h-12 md:h-16">
-  </header>
+  <!-- Header -->
+  <div class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-bl-[36px] md:rounded-bl-[72px] rounded-br-[36px] md:rounded-br-[72px] flex items-center justify-end">
+    <form action="{{ route('logout') }}" method="POST" class="inline">
+        @csrf
+        <button type="submit" class="w-16 h-16 md:w-20 md:h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
+            <i class="fas fa-sign-out-alt text-[40px]"></i>
+        </button>
+    </form>
+  </div>
 
   <main class="main-container flex-grow flex items-center justify-center p-4 md:p-6">
     <div class="flex flex-col md:flex-row max-w-6xl w-full rounded-xl text-black bg-[#2F2D2A] gap-6 md:gap-10 p-4">
 
       <div class="md:w-1/3 w-full flex flex-col items-center justify-center pb-4 md:pb-0">
-        <img src="{{ is_array($profile) ? ($profile['avatar_url'] ?? 'default-avatar.png') : ($profile->avatar_url ?? 'default-avatar.png') }}" alt="Profile Picture" class="rounded-xl w-60 md:w-80 h-auto mb-5">
+        <img src="{{ is_array($profile) ? ($profile['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->email) . '&background=2F2D2A&color=D2C5A5') : ($profile->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->email) . '&background=2F2D2A&color=D2C5A5') }}" alt="Profile Picture" class="rounded-xl w-60 md:w-80 h-auto mb-5">
         <h2 class="text-white text-4xl md:text-5xl font-semibold text-center">{{ is_array($profile) ? $profile['name'] : ($profile->name ?? $user->email) }}</h2>
       </div>
 
@@ -91,22 +93,22 @@
           <form action="{{ route('change-password.update') }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="input-box p-4 mb-3 rounded-lg">
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="current_password" class="block text-sm font-semibold mb-1">Current Password</label>
               <input type="password" id="current_password" name="current_password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
-            </div>
+          </div>
 
-            <div class="input-box p-4 mb-3 rounded-lg">
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="password" class="block text-sm font-semibold mb-1">New Password</label>
               <input type="password" id="password" name="password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
-            </div>
+          </div>
 
-            <div class="input-box p-4 mb-3 rounded-lg">
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="password_confirmation" class="block text-sm font-semibold mb-1">Confirm New Password</label>
               <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
-            </div>
+          </div>
 
-            <div class="text-right">
+          <div class="text-right">
               <button type="submit" class="confirm-button px-4 py-2 rounded text-sm">Update Password</button>
             </div>
           </form>
@@ -122,24 +124,17 @@
     </div>
   </main>
 
-  <footer class="footer flex-shrink-0 h-20 md:h-24 rounded-t-[2rem] shadow-md flex flex-col items-center text-black px-6">
-    <div class="flex justify-center items-center gap-6 md:gap-10 mt-4 flex-wrap">
-      <a href="{{ route('dashboard') }}" class="hover:bg-[#444]/20 p-3 rounded-full">
-        <i data-lucide="home" class="w-6 h-6 text-[#2F2D2A]"></i>
-      </a>
-
-      <a href="{{ route('tasks.create') }}" class="bg-white border-4 border-[#2F2D2A] rounded-full p-4 hover:bg-gray-200 transition">
-        <i data-lucide="plus" class="w-8 h-8 text-[#2F2D2A]"></i>
-      </a>
-
-      <a href="{{ route('tasks.index') }}" class="hover:bg-[#444]/20 p-3 rounded-full">
-        <i data-lucide="check-square" class="w-6 h-6 text-[#2F2D2A]"></i>
-      </a>
-    </div>
+  <!-- Footer -->
+  <footer class="w-full h-28 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
+    <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+        <i class="fas fa-user text-[40px] mb-1"></i>
+    </a>
+    <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+        <i class="fas fa-plus"></i>
+    </button>
+    <a href="{{ route('dashboard') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+        <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
+    </a>
   </footer>
-
-  <script>
-    lucide.replace();
-  </script>
 </body>
 </html>

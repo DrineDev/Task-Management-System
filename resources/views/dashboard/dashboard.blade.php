@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
         <title>dashboard</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    </head>
+</head>
     <body class="overflow-x-hidden">
 <!-- ------------------------------- TOP BAR ------------------------------- -->
 
 <div class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-bl-[36px] md:rounded-bl-[72px] rounded-br-[36px] md:rounded-br-[72px] flex items-center justify-between">
-    <div class="flex items-center">
+    <a href="{{ route('profile.show') }}" class="flex items-center hover:opacity-80 transition-opacity">
         <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden">
-            <img src="https://scontent.fceb5-1.fna.fbcdn.net/v/t1.15752-9/494691149_1210378300185800_1251328112097693854_n.png?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFXKITHiyuCpIfzfDxcS4uRa_MhWbjLagJr8yFZuMtqAhip9fubz25PYlenTJBdUsvf4VUDaVSickdElvZeuh5p&_nc_ohc=ns0brLQtLRgQ7kNvwEP32KB&_nc_oc=Adnj59VG1ltNRLdgb2PQU5pZf2VP4k8XBTXvuwNsl2rVkwaEwtP4LRMwR1NFoe8KhIQ&_nc_zt=23&_nc_ht=scontent.fceb5-1.fna&oh=03_Q7cD2QFbj5GEZqig7KO5FHZirrcHz1-q3-_XaMrcHdtR5_hMdA&oe=685F4105" alt="User Avatar" class="w-full h-full object-cover">
+            <img src="{{ is_array($profile) ? ($profile['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->email) . '&background=2F2D2A&color=D2C5A5') : ($profile->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->email) . '&background=2F2D2A&color=D2C5A5') }}" alt="User Avatar" class="w-full h-full object-cover">
         </div>
         <div class="ml-3">
-            <h2 class="text-[24px] md:text-[40px] font-semibold text-[#2F2D2A]">Jarod Rebalde</h2>
+            <h2 class="text-[24px] md:text-[40px] font-semibold text-[#2F2D2A]">{{ is_array($profile) ? ($profile['name'] ?? $user->email) : ($profile->name ?? $user->email) }}</h2>
             <p class="text-[12px] md:text-[16px] text-[#2F2D2A]">Welcome Back</p>
         </div>
-    </div>
+    </a>
     <button class="w-16 h-16 md:w-20 md:h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 md:size-10">
     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
@@ -264,9 +264,9 @@
 <!-- ------------------------------- NAVBAR -------------------------------- -->
 
   <footer class="fixed bottom-0 left-0 right-0 w-full h-28 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg pointer-events-auto">
-            <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+            <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-user text-[40px] mb-1"></i>
-            </button>
+            </a>
             <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
                 <i class="fas fa-plus"></i>
             </button>
@@ -325,7 +325,7 @@
                     <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
                     </div>
             </div>
-            <div>
+        <div>
                 <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
                 <div class="flex items-center space-x-2">
                     <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i>
@@ -421,7 +421,7 @@
                     <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
                 </div>
             </div>
-            <div>
+        <div>
                 <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
                 <div class="flex items-center space-x-2">
                     <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i> Low</button>
@@ -436,7 +436,7 @@
             </button>
         </div>
     </div>
-</div>
+        </div>
 
 <!-- --------------------------- EDIT PROJECT MODAL --------------------------- -->
 <div id="editProjectModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
@@ -454,7 +454,7 @@
                 <input type="text" id="editProjectTitle" placeholder="Edit project title"
                        class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
             </div>
-            <div>
+        <div>
                 <label for="editProjectDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Description</label>
                 <textarea id="editProjectDescription" placeholder="Edit project description"
                           class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>

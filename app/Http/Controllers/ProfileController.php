@@ -88,7 +88,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
-            'avatar_url' => ['nullable', 'string', 'max:255'],
+            'avatar' => ['nullable', 'image', 'max:2048'], // max 2MB
         ]);
 
         try {
@@ -110,12 +110,46 @@ class ProfileController extends Controller
             $currentProfile = $currentProfileResponse->json()[0];
             $updateData = [];
 
-            // Only include fields that have changed
+            // Handle name update
             if ($request->filled('name') && $request->name !== $currentProfile['name']) {
                 $updateData['name'] = $request->name;
             }
-            if ($request->filled('avatar_url') && $request->avatar_url !== $currentProfile['avatar_url']) {
-                $updateData['avatar_url'] = $request->avatar_url;
+
+            // Handle avatar upload
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                $fileName = $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Upload to Supabase Storage
+                $uploadResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                ])->attach(
+                    'file', file_get_contents($file), $fileName, [
+                        'Content-Type' => $file->getMimeType()
+                    ]
+                )->post(config('services.supabase.url') . '/storage/v1/object/profile-pictures/' . $fileName);
+
+                if ($uploadResponse->successful()) {
+                    // Get the public URL for the uploaded file
+                    $publicUrl = config('services.supabase.url') . '/storage/v1/object/public/profile-pictures/' . $fileName;
+                    $updateData['avatar_url'] = $publicUrl;
+
+                    // Delete old avatar if it exists
+                    if (!empty($currentProfile['avatar_url'])) {
+                        $oldFileName = basename($currentProfile['avatar_url']);
+                        Http::withHeaders([
+                            'apikey' => config('services.supabase.key'),
+                            'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                        ])->delete(config('services.supabase.url') . '/storage/v1/object/profile-pictures/' . $oldFileName);
+                    }
+                } else {
+                    Log::error('Failed to upload avatar to Supabase', [
+                        'status' => $uploadResponse->status(),
+                        'response' => $uploadResponse->json()
+                    ]);
+                    return back()->withErrors(['avatar' => 'Failed to upload profile picture. Please try again.']);
+                }
             }
 
             // If nothing has changed, return success
@@ -124,7 +158,7 @@ class ProfileController extends Controller
                     ->with('success', 'No changes were made.');
             }
 
-            // Update profile in Supabase using service role key
+            // Update profile in Supabase
             $response = Http::withHeaders([
                 'apikey' => config('services.supabase.key'),
                 'Authorization' => 'Bearer ' . config('services.supabase.key'),

@@ -8,6 +8,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ChangeEmailController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\SupabaseAuth;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +46,9 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes (requires login)
 Route::middleware(['web', SupabaseAuth::class])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
+    Route::get('/dashboard/calendar', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -59,8 +62,14 @@ Route::middleware(['web', SupabaseAuth::class])->group(function () {
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password.show');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
 
+    // Projects
+    Route::resource('projects', ProjectController::class);
+    Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
+
     // Tasks
-    Route::resource('/tasks', TaskController::class);
+    Route::resource('tasks', TaskController::class);
+    Route::put('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
+    Route::get('/tasks/calendar', [TaskController::class, 'calendar'])->name('tasks.calendar');
 
     // Logout
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
