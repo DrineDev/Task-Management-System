@@ -127,9 +127,13 @@
               <a href="{{ route('change-password.show') }}" class="control-box p-4 rounded-lg text-left text-black w-full">
                 Change Password
               </a>
-              <button type="button" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg text-left text-white w-1/3">
-                Delete Account
-              </button>
+              <form action="{{ route('account.delete') }}" method="POST" onsubmit="return confirmDeletion();" class="w-1/3">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg text-left text-white w-full">
+                  Delete Account
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -138,17 +142,22 @@
   </main>
 
   <!-- Footer -->
-  <footer class="w-full h-28 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
-    <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+  <footer class="fixed bottom-0 left-0 right-0 w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
+    <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-user text-[40px] mb-1"></i>
-    </a>
-    <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+    </button>
+    <button class="w-28 h-28 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
         <i class="fas fa-plus"></i>
     </button>
-    <a href="{{ route('dashboard') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+    <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
-    </a>
+    </button>
   </footer>
+
+  <script>
+    function confirmDeletion() {
+      return confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    }
+  </script>
 </body>
 </html>
-
