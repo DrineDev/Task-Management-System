@@ -21,9 +21,8 @@
     <p>Logging you in...</p>
 
     <script>
-        // Replace this with values from .env in production
-        const SUPABASE_URL = 'https://pzgirrnqvdqgvrmurhyy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Z2lycm5xdmRxZ3ZybXVyaHl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NTE2NjcsImV4cCI6MjA2NDMyNzY2N30.LXAcux6QHOSUTsnmbERUIwptC19PA8sA_4TecmogCUs';
+        const SUPABASE_URL = '{{ config('services.supabase.url') }}';
+        const SUPABASE_ANON_KEY = '{{ config('services.supabase.anon_key') }}';
 
         const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 

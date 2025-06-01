@@ -81,7 +81,7 @@
             </div>
         @endif
 
-        <!-- SOCIAL LOGIN SECTION (OUTSIDE THE FORM) -->
+        <!-- SOCIAL LOGIN SECTION -->
         <div class="flex items-center gap-3 pt-5">
             <div class="flex-grow border-t border-white"></div>
             <div class="text-white text-xs font-normal font-['Istok_Web']">or sign in with</div>
@@ -90,21 +90,16 @@
 
         <div class="flex justify-center items-center gap-4 mt-6">
             <!-- Google Button -->
-            <div class="relative w-40 h-9">
-                <button id="google-login" type="button" class="w-full h-full flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
-                    <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Google</span>
-                </button>
-            </div>
+            <a href="{{ route('auth.provider', 'google') }}" class="w-40 h-9 flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
+                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
+                <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Google</span>
+            </a>
 
             <!-- Facebook Button -->
-            <div class="relative w-40 h-9">
-                <button id="facebook-login" type="button" class="w-full h-full flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-4 h-4">
-                    <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Facebook</span>
-                </button>
-            </div>
-
+            <a href="{{ route('auth.provider', 'facebook') }}" class="w-40 h-9 flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-4 h-4">
+                <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Facebook</span>
+            </a>
         </div>
 
     </div>
@@ -112,75 +107,6 @@
 
 <!--BOTTOM BAR-->
 <div class="w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] absolute inset-x-0 bottom-0"></div>
-
-<!-- SUPABASE SCRIPT -->
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/dist/umd/supabase.min.js"></script>
-<script>
-    console.log('🔧 Script loaded'); // <-- this should always appear
-
-    const supabase = window.supabase.createClient(
-        'https://pzgirrnqvdqgvrmurhyy.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Z2lycm5xdmRxZ3ZybXVyaHl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NTE2NjcsImV4cCI6MjA2NDMyNzY2N30.LXAcux6QHOSUTsnmbERUIwptC19PA8sA_4TecmogCUs'
-    );
-
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log('🔧 DOM loaded'); // <-- this should show too
-
-        const googleBtn = document.getElementById('google-login');
-
-        if (googleBtn) {
-            console.log('✅ Google button found');
-            googleBtn.addEventListener('click', async function (event) {
-                event.preventDefault();
-                console.log('🚀 Google login button clicked');
-
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: 'http://localhost:8000/auth/callback'
-                    }
-                });
-
-                if (error) {
-                    console.error('❌ Google sign-in error:', error.message);
-                    alert('Google login failed. Check console for details.');
-                } else {
-                    console.log('✅ Redirect to Google sent');
-                }
-            });
-        } else {
-            console.warn('⚠️ Google login button not found');
-        }
-    });
-
-
-        const facebookBtn = document.getElementById('facebook-login');
-
-        if (facebookBtn) {
-            console.log('✅ Facebook button found');
-            facebookBtn.addEventListener('click', async function (event) {
-                event.preventDefault();
-                console.log('🚀 Facebook login button clicked');
-
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'facebook',
-                    options: {
-                        redirectTo: 'http://localhost:8000/auth/callback'
-                    }
-                });
-
-                if (error) {
-                    console.error('❌ Facebook sign-in error:', error.message);
-                    alert('Facebook login failed. Check console for details.');
-                } else {
-                    console.log('✅ Redirect to Facebook sent');
-                }
-            });
-        } else {
-            console.warn('⚠️ Facebook login button not found');
-        }
-
-</script>
 
 </body>
 </html>

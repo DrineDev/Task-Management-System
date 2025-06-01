@@ -8,9 +8,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ChangeEmailController;
-use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AuthController;
 
 // Root redirect
 Route::get('/', function () {
@@ -62,10 +60,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password.show');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
 
-    // Projects
-    Route::resource('projects', ProjectController::class);
-    Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
-
     // Tasks
     Route::resource('tasks', TaskController::class);
     Route::put('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
@@ -76,5 +70,5 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // OAuth callback endpoints (no auth required)
-Route::get('/auth/callback', [AuthController::class, 'supabaseCallback']);
-Route::post('/auth/supabase-login', [AuthController::class, 'supabaseLogin']);
+Route::get('/auth/callback', [LoginController::class, 'supabaseCallback'])->name('auth.callback');
+Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('auth.provider')->where('provider', 'google|facebook');

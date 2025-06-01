@@ -11,6 +11,13 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'auth.users';
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
@@ -39,6 +46,7 @@ class User extends Authenticatable
     protected $fillable = [
         'id',
         'email',
+        'raw_user_meta_data',
     ];
 
     /**
@@ -62,6 +70,7 @@ class User extends Authenticatable
         return new static([
             'id' => $supabaseUser['id'],
             'email' => $supabaseUser['email'],
+            'raw_user_meta_data' => $supabaseUser['user_metadata'] ?? [],
         ]);
     }
 
@@ -113,17 +122,17 @@ class User extends Authenticatable
      */
     public function setRememberToken($value)
     {
-        // Do nothing - we don't use remember tokens with Supabase
+        // Not implemented as we're using Supabase auth
     }
 
     /**
-     * Get the column name for the "remember me" token.
+     * Get the name attribute.
      *
      * @return string
      */
-    public function getRememberTokenName()
+    public function getNameAttribute()
     {
-        return '';
+        return $this->raw_user_meta_data['full_name'] ?? $this->email;
     }
 
     /**
