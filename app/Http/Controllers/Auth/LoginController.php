@@ -13,9 +13,16 @@ use Illuminate\Support\Facades\Log;
 class LoginController extends Controller
 {
     /* Show login form */
-    public function showLoginForm(){
+    public function showLoginForm()
+    {
+        if (Auth::check()) {
+            return redirect()->intended('/dashboard');
+        }
+
         return view('auth.login');
     }
+
+
 
     //1. Validate the incoming data(email and password)
 

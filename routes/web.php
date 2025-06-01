@@ -9,8 +9,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ChangeEmailController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Middleware\SupabaseAuth;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
 
 // Root redirect
 Route::get('/', function () {
@@ -44,20 +44,20 @@ Route::middleware('guest')->group(function () {
 });
 
 // Authenticated Routes (requires login)
-Route::middleware(['web', SupabaseAuth::class])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/dashboard/calendar', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
-    
+
     // Email change routes
     Route::get('/change-email', [ChangeEmailController::class, 'show'])->name('change-email.show');
     Route::put('/change-email', [ChangeEmailController::class, 'update'])->name('change-email.update');
-    
+
     // Password change routes
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password.show');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
@@ -74,3 +74,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
     // Logout
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });
+
+// OAuth callback endpoints (no auth required)
+Route::get('/auth/callback', [AuthController::class, 'supabaseCallback']);
+Route::post('/auth/supabase-login', [AuthController::class, 'supabaseLogin']);
