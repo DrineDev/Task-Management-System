@@ -8,8 +8,12 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/dashboard.css',
                 'resources/js/app.js',
+                'resources/js/task-manager.js'
             ],
             refresh: true,
         }),
     ],
+    css: {
+        postcss: './postcss.config.js',
+    },
 });

@@ -31,8 +31,8 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+                        ->withErrors($validator)
+                        ->withInput();
         }
 
         $supabaseUrl = config('services.supabase.url');
@@ -67,25 +67,25 @@ class LoginController extends Controller
             if ($response->successful()) {
                 $data = $response->json();
                 $user = User::fromSupabase($data['user']);
-                
+
                 $request->session()->put('supabase_access_token', $data['access_token']);
                 $request->session()->put('supabase_refresh_token', $data['refresh_token'] ?? null);
                 $request->session()->put('supabase_token_expires_at', now()->addSeconds($data['expires_in']));
-                
+
                 Auth::login($user);
                 $request->session()->regenerate();
 
                 return redirect()->intended('/dashboard')->with('success', 'Successfully Logged in!');
             }
 
-            $errorData = $response->json();
-            $errorMessage = $errorData['error_description'] ?? ($errorData['message'] ?? 'Invalid login credentials or user does not exist.');
+                $errorData = $response->json();
+                $errorMessage = $errorData['error_description'] ?? ($errorData['message'] ?? 'Invalid login credentials or user does not exist.');
 
             Log::warning('Supabase login failed for email: ' . $request->email . ' - Supabase Error: ' . $errorMessage, [
                 'response_body' => $errorData,
                 'status_code' => $response->status()
             ]);
-            return redirect()->back()->with('error', $errorMessage)->withInput();
+                return redirect()->back()->with('error', $errorMessage)->withInput();
         } catch (\Exception $e) {
             Log::error('General error during Supabase login', [
                 'message' => $e->getMessage(),

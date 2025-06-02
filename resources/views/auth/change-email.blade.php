@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Change Email</title>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+@vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
@@ -87,23 +87,23 @@
                   <li>{{ $error }}</li>
                 @endforeach
               </ul>
-            </div>
+          </div>
           @endif
 
           <form action="{{ route('change-email.update') }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="input-box p-4 mb-3 rounded-lg">
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="current_password" class="block text-sm font-semibold mb-1">Current Password</label>
               <input type="password" id="current_password" name="current_password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
-            </div>
+          </div>
 
-            <div class="input-box p-4 mb-3 rounded-lg">
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="email" class="block text-sm font-semibold mb-1">New Email</label>
               <input type="email" id="email" name="email" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
-            </div>
+          </div>
 
-            <div class="text-right">
+          <div class="text-right">
               <button type="submit" class="confirm-button px-4 py-2 rounded text-sm">Update Email</button>
             </div>
           </form>
@@ -126,7 +126,7 @@
     </a>
     <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
         <i class="fas fa-plus"></i>
-    </button>
+      </button>
     <a href="{{ route('dashboard') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
     </a>
