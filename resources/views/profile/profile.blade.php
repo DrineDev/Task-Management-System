@@ -12,15 +12,20 @@
     body {
       background-color: #2F2D2A;
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       font-family: Arial, sans-serif;
+      position: relative;
+      padding-bottom: 8rem; /* Add padding for footer */
     }
 
     .main-container {
       background-color: #2F2D2A;
       box-shadow: 15px 15px 30px rgba(0,0,0,0.8), -15px 15px 30px rgba(0,0,0,0.6), 0 20px 30px rgba(0,0,0,0.7);
+      flex: 1;
+      width: 100%;
+      overflow-y: auto;
     }
 
     .info-box, .control-box, .input-box {
@@ -40,6 +45,14 @@
       background-color: #A47551;
       color: white;
     }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+    }
   </style>
 </head>
 <body class="text-white">
@@ -54,7 +67,7 @@
   </div>
 
   <!-- Main Content -->
-  <main class="main-container flex-grow flex items-center justify-center p-4 md:p-6">
+  <main class="main-container flex items-center justify-center p-4 md:p-6">
     <div class="flex flex-col md:flex-row max-w-6xl w-full rounded-xl text-black bg-[#2F2D2A] gap-6 md:gap-10 p-4">
 
       <!-- Profile Picture + Name -->
@@ -127,7 +140,7 @@
               <a href="{{ route('change-password.show') }}" class="control-box p-4 rounded-lg text-left text-black w-full">
                 Change Password
               </a>
-              <form action="{{ route('account.delete') }}" method="POST" onsubmit="return confirmDeletion();" class="w-1/3">
+              <form action="" method="POST" onsubmit="return confirmDeletion();" class="w-1/3">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg text-left text-white w-full">
@@ -149,9 +162,9 @@
     <button class="w-28 h-28 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
         <i class="fas fa-plus"></i>
     </button>
-    <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+    <a href="{{ route('dashboard') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
-    </button>
+    </a>
   </footer>
 
   <script>

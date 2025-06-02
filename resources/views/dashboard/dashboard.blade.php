@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
-        <title>dashboard</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @vite(['resources/css/dashboard.css', 'resources/js/app.js', 'resources/js/task-manager.js'])
+    <title>dashboard</title>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
     <body class="overflow-x-hidden">
@@ -33,31 +34,30 @@
 <!--                             DASHBOARD MAIN                              -->
 <!-- ----------------------------------------------------------------------- -->
 
-    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9 min-h-[calc(100vh-7rem)] overflow-y-auto">
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 m-9 pb-32">
 <!-- ------------------------------- SEARCH -------------------------------- -->
-            <div class="md:col-span-2 space-y-6 md:space-y-5">
+            <div class="md:col-span-2 space-y-6">
                 <div class="flex items-center">
                     <input type="text" placeholder="Search..." class="flex-grow bg-stone-200 rounded-xl outline-none text-stone-900/50 text-xl font-bold font-['Inter']">
                     <button class="ml-3 p-2 bg-[#C7B89B] rounded-md hover:bg-[#7c6e5b] transition-colors ease-in-out">
                         <i class="fas fa-sliders-h text-[#3D3D3]"></i>
                     </button>
-
                 </div>
 <!-- ------------------------------- STATUS -------------------------------- -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-[#c7bb9b] rounded-xl p-5 text-center shadow-lg">
                         <i class="fa-regular fa-clock text-[#2F2D2A] text-3xl mb-2"></i>
-                        <h2 class="text-4xl font-bold text-[#2F2D2A]">5</h2>
+                        <h2 id="ongoing" class="text-4xl font-bold text-[#2F2D2A]">{{ $stats['ongoing'] }}</h2>
                         <p class="text-[#1B1A19]">Ongoing</p>
                     </div>
                     <div class="bg-[#c7bb9b] rounded-xl p-5 text-center shadow-lg">
                         <i class="fa-regular fa-circle-check text-[#2F2D2A] text-3xl mb-2"></i>
-                        <h2 class="text-4xl font-bold text-[#2F2D2A]">4</h2>
+                        <h2 id="completed" class="text-4xl font-bold text-[#2F2D2A]">{{ $stats['completed'] }}</h2>
                         <p class="text-[#1B1A19]">Completed</p>
                     </div>
                     <div class="bg-[#c7bb9b] rounded-xl p-5 text-center shadow-lg">
                         <i class="fa-regular fa-calendar-xmark text-[#2F2D2A] text-3xl mb-2"></i>
-                        <h2 class="text-4xl font-bold text-[#2F2D2A]">2</h2>
+                        <h2 id="overdue" class="text-4xl font-bold text-[#2F2D2A]">{{ $stats['overdue'] }}</h2>
                         <p class="text-[#1B1A19]">Overdue</p>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
              <div class="bg-[#2f2d2a] rounded-xl p-6 shadow-lg">
                     <div class="flex items-center justify-between mb-4">
                         <button id="prevBtn" class="text-[#ece3d2] hover:text-gray-300 transition-colors"><i class="fas fa-chevron-left"></i></button>
-                        <h3 id="monthYear" class="text-[26px] font-semibold"></h3>
+                        <h3 id="monthYear" class="text-[26px] font-semibold text-[#ece3d2]"></h3>
                         <button id="nextBtn" class="text-[#ece3d2] hover:text-gray-300 transition-colors"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     <div class="grid grid-cols-7 text-center text-[#ece3d2] font-medium mb-3">
@@ -77,130 +77,156 @@
                         <span>Fri</span>
                         <span>Sat</span>
                     </div>
-                    <div id="calendarDays" class="grid grid-cols-7 grid-rows-6 gap-2">
-                        </div>
+                    <div id="calendarDays" class="grid grid-cols-7 gap-2">
+                    </div>
                 </div>
 
-<!-- ------------------------------ PROJECTS ------------------------------- -->
+<!-- ------------------------------ PROJECTS AND TASKS ------------------------------- -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-[#2f2d2a] rounded-xl p-6 shadow-lg">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-semibold text-[#C7B89B]">Projects</h3>
-                            <button id="openAddProjectModalBtn" class="bg-[#C7B89B] text-[#2F2D2A] rounded-md px-3 py-2 font-bold hover:bg-[#B8A98B] focus:outline-none focus:shadow-outline">
+                            <a href="{{ route('dashboard.add-project') }}" class="bg-[#C7B89B] text-[#2F2D2A] rounded-md px-3 py-2 font-bold hover:bg-[#B8A98B] focus:outline-none focus:shadow-outline">
                                 Add Project
-                            </button>
+                            </a>
                         </div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="font-semibold">Project name</p>
-                                    <p class="text-gray-400 text-sm">No task</p>
-                                </div>
-                                 <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="font-semibold">Project name</p>
-                                    <p class="text-gray-400 text-sm">No task</p>
-                                </div>
-                                 <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="font-semibold">Project name</p>
-                                    <p class="text-gray-400 text-sm">No task</p>
-                                </div>
-                                 <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#D2C5A5] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="EditProject()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteProject()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="projects-container space-y-4 max-h-[400px] overflow-y-auto pr-2 relative">
+                            @php
+                                $incompleteProjects = array_filter($projects, function($project) {
+                                    return !($project['is_complete'] ?? false);
+                                });
+                                $completeProjects = array_filter($projects, function($project) {
+                                    return $project['is_complete'] ?? false;
+                                });
+                            @endphp
+
+                            @if(count($incompleteProjects) > 0 || count($completeProjects) > 0)
+                                @if(count($incompleteProjects) > 0)
+                                    @foreach($incompleteProjects as $project)
+                                        <div class="bg-[#C7B89B] rounded-lg p-4">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <div class="flex items-center gap-2">
+                                                        <h4 class="font-semibold text-[#2F2D2A] mb-2">{{ $project['name'] }}</h4>
+                                                    </div>
+                                                    <p class="text-sm text-[#2F2D2A]">{{ $project['description'] ?? 'No description' }}</p>
+                                                    <p class="text-xs text-[#2F2D2A] mt-2">
+                                                        Created: {{ \Carbon\Carbon::parse($project['created_at'])->format('M d, Y') }}
+                                                    </p>
+                                                </div>
+                                                <div class="flex space-x-2">
+                                                    <a href="{{ route('projects.edit', ['id' => $project['id']]) }}" class="px-3 py-1 text-sm bg-[#2F2D2A] text-[#D2C5A5] rounded-md hover:bg-[#3D3D3D]">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="toggle-project-complete px-3 py-1 text-sm bg-[#2F2D2A] text-green-500 rounded-md hover:bg-[#3D3D3D]" data-project-id="{{ $project['id'] }}">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <button type="button" class="delete-project-btn px-3 py-1 text-sm bg-[#2F2D2A] text-red-500 rounded-md hover:bg-[#3D3D3D]" data-project-id="{{ $project['id'] }}">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+
+                                @if(count($completeProjects) > 0)
+                                    @if(count($incompleteProjects) > 0)
+                                        <div class="my-4 border-t border-[#3D3D3D]"></div>
+                                    @endif
+                                    <div class="text-[#C7B89B] text-sm font-semibold mb-2">Completed Projects</div>
+                                    @foreach($completeProjects as $project)
+                                        <div class="bg-[#C7B89B] rounded-lg p-4 opacity-75">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <div class="flex items-center gap-2">
+                                                        <h4 class="font-semibold text-[#2F2D2A] mb-2">{{ $project['name'] }}</h4>
+                                                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
+                                                    </div>
+                                                    <p class="text-sm text-[#2F2D2A]">{{ $project['description'] ?? 'No description' }}</p>
+                                                    <p class="text-xs text-[#2F2D2A] mt-2">
+                                                        Created: {{ \Carbon\Carbon::parse($project['created_at'])->format('M d, Y') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            @else
+                                <p class="text-[#C7B89B]">No projects yet. Create your first project!</p>
+                            @endif
                         </div>
                     </div>
-<!-- ------------------------------ ALL TASKS ------------------------------ -->
                     <div class="bg-[#2f2d2a] rounded-xl p-6 shadow-lg">
-                        <h3 class="text-[#C7B89B] text-xl font-semibold mb-4">All Task</h3>
-                        <div class="space-y-4">
-                            <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                                 <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button id="openEditTaskModalBtn" class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                                <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                                <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                                <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="bg-[#C7B89B] rounded-lg p-4 flex items-center justify-between shadow-md">
-                                <div>
-                                    <p class="text-[#1B1A19] font-semibold">Clean Up Old Code</p>
-                                    <p class="text-[#2F2D2A] text-sm">Tue, 20 May 2025</p>
-                                </div>
-                                <div class="relative">
-                                    <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer task-settings-icon"></i>
-                                    <div class="absolute right-0 w-44 z-40 bg-[#3D3D3D] rounded-md shadow-lg hidden task-options">
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="editTask()">Edit</button>
-                                        <button class="block px-4 py-2 text-lg text-[#D2C5A5] hover:bg-[#555555] w-full text-left" onclick="deleteTask()">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <h3 class="text-[#C7B89B] text-xl font-semibold mb-4">All Tasks</h3>
+                        <div class="tasks-container space-y-4 max-h-[400px] overflow-y-auto pr-2 relative">
+                            @php
+                                $incompleteTasks = array_filter($tasks, function($task) {
+                                    return !($task['is_completed'] ?? false);
+                                });
+                                $completeTasks = array_filter($tasks, function($task) {
+                                    return $task['is_completed'] ?? false;
+                                });
+                            @endphp
+
+                            @if(count($incompleteTasks) > 0 || count($completeTasks) > 0)
+                                @if(count($incompleteTasks) > 0)
+                                    @foreach($incompleteTasks as $task)
+                                        <div class="bg-[#C7B89B] rounded-lg p-4 flex justify-between items-center">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <h4 class="font-semibold text-[#2F2D2A]">{{ $task['title'] }}</h4>
+                                                    @if($task['priority'] == 3)
+                                                        <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">High</span>
+                                                    @elseif($task['priority'] == 2)
+                                                        <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">Medium</span>
+                                                    @else
+                                                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Low</span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-sm text-[#2F2D2A]">{{ $task['description'] ?? 'No description' }}</p>
+                                                <p class="text-xs text-[#2F2D2A] mt-1">
+                                                    Due: {{ \Carbon\Carbon::parse($task['deadline'])->format('M d, Y') }}
+                                                </p>
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <a href="{{ route('tasks.edit', ['id' => $task['id']]) }}" class="px-3 py-1 text-sm bg-[#2F2D2A] text-[#D2C5A5] rounded-md hover:bg-[#3D3D3D]">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="toggle-task-complete px-3 py-1 text-sm bg-[#2F2D2A] text-green-500 rounded-md hover:bg-[#3D3D3D]" data-task-id="{{ $task['id'] }}">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button type="button" class="delete-task-btn px-3 py-1 text-sm bg-[#2F2D2A] text-red-500 rounded-md hover:bg-[#3D3D3D]" data-task-id="{{ $task['id'] }}">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+
+                                @if(count($completeTasks) > 0)
+                                    @if(count($incompleteTasks) > 0)
+                                        <div class="my-4 border-t border-[#3D3D3D]"></div>
+                                    @endif
+                                    <div class="text-[#C7B89B] text-sm font-semibold mb-2">Completed Tasks</div>
+                                    @foreach($completeTasks as $task)
+                                        <div class="bg-[#C7B89B] rounded-lg p-4 flex justify-between items-center opacity-75">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <h4 class="font-semibold text-[#2F2D2A]">{{ $task['title'] }}</h4>
+                                                    <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
+                                                </div>
+                                                <p class="text-sm text-[#2F2D2A]">{{ $task['description'] ?? 'No description' }}</p>
+                                                <p class="text-xs text-[#2F2D2A] mt-1">
+                                                    Due: {{ \Carbon\Carbon::parse($task['deadline'])->format('M d, Y') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            @else
+                                <p class="text-[#C7B89B]">No tasks yet. Create your first task!</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -208,68 +234,58 @@
 
 <!-- --------------------------- Priority Tasks ---------------------------- -->
             <div class="md:col-span-1 space-y-6">
-                <div class="bg-[#C7B89B] rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="bg-[#2F2D2A] text-[#D2C5A5] text-xs font-semibold px-2 py-1 rounded-full">High</span>
-                        <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
+                @php
+                    $highPriorityTasks = array_filter($tasks, function($task) {
+                        return ($task['priority'] ?? 0) === 3 && !($task['is_completed'] ?? false);
+                    });
+                    $highPriorityTasks = array_slice($highPriorityTasks, 0, 3);
+                @endphp
+                @if(count($highPriorityTasks) > 0)
+                    @foreach($highPriorityTasks as $task)
+                    <div class="bg-[#C7B89B] rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-[#2F2D2A] text-[#D2C5A5] text-xs font-semibold px-2 py-1 rounded-full">High</span>
+                            @if(!($task['is_completed'] ?? false))
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('tasks.edit', ['id' => $task['id']]) }}" class="px-3 py-1 text-sm bg-[#2F2D2A] text-[#D2C5A5] rounded-md hover:bg-[#3D3D3D]">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="toggle-task-complete px-3 py-1 text-sm bg-[#2F2D2A] text-green-500 rounded-md hover:bg-[#3D3D3D]" data-task-id="{{ $task['id'] }}">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="delete-task-btn px-3 py-1 text-sm bg-[#2F2D2A] text-red-500 rounded-md hover:bg-[#3D3D3D]" data-task-id="{{ $task['id'] }}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            @else
+                                <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
+                            @endif
+                        </div>
+                        <h3 class="text-[#1B1A19] text-lg font-semibold mb-2">{{ $task['title'] }}</h3>
+                        <p class="text-[#2F2D2A] text-sm mb-4">{{ $task['description'] }}</p>
+                        <div class="text-[#2F2D2A] flex items-center justify-between text-sm">
+                            <p>Progress</p>
+                            <p>{{ $task['progress'] ?? 0 }}%</p>
+                        </div>
+                        <div class="w-full bg-[#D9D9D9] rounded-full h-2.5 mt-2">
+                            <div class="bg-[#3D3D3D] h-2.5 rounded-full" style="width: {{ $task['progress'] ?? 0 }}%"></div>
+                        </div>
+                        <p class="text-[#2F2D2A] text-xs mt-4">{{ \Carbon\Carbon::parse($task['deadline'])->format('D, d M Y') }}</p>
                     </div>
-                    <h3 class="text-[#1B1A19] text-lg font-semibold mb-2">Implement User Authentication Module</h3>
-                    <p class="text-[#2F2D2A] text-sm mb-4">Develop a secure user login and registration system</p>
-                    <div class="text-[#2F2D2A] flex items-center justify-between text-sm">
-                        <p>Progress</p>
-                        <p>50 %</p>
-                    </div>
-                    <div class="w-full bg-[#D9D9D9] rounded-full h-2.5 mt-2">
-                        <div class="bg-[#3D3D3D] h-2.5 rounded-full" style="width: 50%"></div>
-                    </div>
-                    <p class="text-[#2F2D2A] text-xs mt-4">Mon, 10 May 2025</p>
-                </div>
-
-                <div class="bg-[#C7B89B] rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="bg-[#2F2D2A] text-[#D2C5A5] text-xs font-semibold px-2 py-1 rounded-full">High</span>
-                        <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
-                    </div>
-                    <h3 class="text-[#1B1A19] text-lg font-semibold mb-2">Implement User Authentication Module</h3>
-                    <p class="text-[#2F2D2A] text-sm mb-4">Develop a secure user login and registration system</p>
-                    <div class="text-[#2F2D2A] flex items-center justify-between text-sm">
-                        <p>Progress</p>
-                        <p>50 %</p>
-                    </div>
-                    <div class="w-full bg-[#D9D9D9] rounded-full h-2.5 mt-2">
-                        <div class="bg-[#3D3D3D] h-2.5 rounded-full" style="width: 50%"></div>
-                    </div>
-                    <p class="text-[#2F2D2A] text-xs mt-4">Mon, 10 May 2025</p>
-                </div>
-
-                <div class="bg-[#C7B89B] rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="bg-[#2F2D2A] text-[#D2C5A5] text-xs font-semibold px-2 py-1 rounded-full">High</span>
-                        <i class="fas fa-ellipsis-v text-[#2F2D2A] cursor-pointer"></i>
-                    </div>
-                    <h3 class="text-[#1B1A19] text-lg font-semibold mb-2">Implement User Authentication Module</h3>
-                    <p class="text-[#2F2D2A] text-sm mb-4">Develop a secure user login and registration system</p>
-                    <div class="text-[#2F2D2A] flex items-center justify-between text-sm">
-                        <p>Progress</p>
-                        <p>50 %</p>
-                    </div>
-                    <div class="w-full bg-[#D9D9D9] rounded-full h-2.5 mt-2">
-                        <div class="bg-[#3D3D3D] h-2.5 rounded-full" style="width: 50%"></div>
-                    </div>
-                    <p class="text-[#2F2D2A] text-xs mt-4">Mon, 10 May 2025</p>
-                </div>
+                    @endforeach
+                @endif
             </div>
         </main>
 
 <!-- ------------------------------- NAVBAR -------------------------------- -->
 
-  <footer class="fixed bottom-0 left-0 right-0 w-full h-28 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg pointer-events-auto">
+  <footer class="fixed bottom-0 left-0 right-0 w-full h-28 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
             <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-user text-[40px] mb-1"></i>
             </a>
-            <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+            <a href="{{ route('tasks.create') }}" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
                 <i class="fas fa-plus"></i>
-            </button>
+            </a>
             <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
                 <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
             </button>
@@ -278,196 +294,6 @@
 <!-- ----------------------------------------------------------------------- -->
 <!--                                 MODALS                                  -->
 <!-- ----------------------------------------------------------------------- -->
-
-
-<!-- ------------------------------- ADD TASK MODAL ------------------------------- -->
-<div id="addTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
-        <div class="flex items-center justify-between mb-6">
-            <button id="closeAddTaskModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
-                <i class="fas fa-arrow-left text-xl"></i> Back
-            </button>
-            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Create New Task</h2>
-            <div></div> </div>
-
-        <div class="space-y-4">
-            <div>
-                <label for="taskTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Title</label>
-                <input type="text" id="taskTitle" placeholder="Write Here"
-                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-            </div>
-            <div>
-                <label for="taskDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Description</label>
-                <textarea id="taskDescription" placeholder="Write Here"
-                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="startDate" class="block text-[#C7B89B] text-sm font-bold mb-2">Start Date</label>
-                    <div class="relative">
-                        <input type="date" id="startDate"
-                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-                    </div>
-                </div>
-                <div>
-                    <label for="endDate" class="block text-[#C7B89B] text-sm font-bold mb-2">End Date</label>
-                    <div class="relative">
-                        <input type="date" id="endDate"
-                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Category</label>
-                <div class="flex items-center space-x-2">
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">+</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Work</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
-                    </div>
-            </div>
-        <div>
-                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
-                <div class="flex items-center space-x-2">
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i>
-                    Low</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-equals mr-1"></i> Normal</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-exclamation mr-1"></i> High</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-8">
-            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
-                Create Task
-            </button>
-        </div>
-    </div>
-</div>
-
-
-<!-- ------------------------------- ADD PROJECT MODAL ------------------------------- -->
-
-<div id="addProjectModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#3D3D3D] rounded-3xl p-8 w-full max-w-md">
-        <div class="flex items-center justify-between mb-6">
-            <button id="closeAddProjectModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
-                <i class="fas fa-arrow-left text-xl"></i> Back
-            </button>
-            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Create New Project</h2>
-            <div></div>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label for="projectTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Title</label>
-                <input type="text" id="projectTitle" placeholder="Enter project title"
-                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-            </div>
-            <div>
-                <label for="projectDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Description</label>
-                <textarea id="projectDescription" placeholder="Enter project description"
-                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
-            </div>
-            </div>
-        <div class="mt-8">
-            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
-                Create Project
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- --------------------------- EDIT TASK MODAL --------------------------- -->
-<div id="editTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
-        <div class="flex items-center justify-between mb-6">
-            <button id="closeEditTaskModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
-                <i class="fas fa-arrow-left text-xl"></i> Back
-            </button>
-            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Edit Task</h2>
-            <div></div>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label for="editTaskTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Change Title</label>
-                <input type="text" id="editTaskTitle" placeholder="Write Here"
-                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-            </div>
-            <div>
-                <label for="editTaskDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Change Description</label>
-                <textarea id="editTaskDescription" placeholder="Write Here"
-                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="editStartDate" class="block text-[#C7B89B] text-sm font-bold mb-2">Start Date</label>
-                    <div class="relative">
-                        <input type="date" id="editStartDate"
-                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-                    </div>
-                </div>
-                <div>
-                    <label for="editEndDate" class="block text-[#C7B89B] text-sm font-bold mb-2">End Date</label>
-                    <div class="relative">
-                        <input type="date" id="editEndDate"
-                               class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Change Category</label>
-                <div class="flex items-center space-x-2">
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">+</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Work</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold">Personal</button>
-                </div>
-            </div>
-        <div>
-                <label class="block text-[#C7B89B] text-sm font-bold mb-2">Priority</label>
-                <div class="flex items-center space-x-2">
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-minus mr-1"></i> Low</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-equals mr-1"></i> Normal</button>
-                    <button class="bg-[#D2C5A5] text-[#2F2D2A] rounded-xl px-3 py-2 font-bold flex items-center"><i class="fas fa-exclamation mr-1"></i> High</button>
-                </div>
-            </div>
-        </div>
-        <div class="mt-8">
-            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
-                Save Changes
-            </button>
-        </div>
-    </div>
-        </div>
-
-<!-- --------------------------- EDIT PROJECT MODAL --------------------------- -->
-<div id="editProjectModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#3D3D3D] rounded-3xl p-8 w-full max-w-md">
-        <div class="flex items-center justify-between mb-6">
-            <button id="closeEditProjectModal" class="text-[#D2C5A5] hover:text-[#C7B89B]">
-                <i class="fas fa-arrow-left text-xl"></i> Back
-            </button>
-            <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Edit Project</h2>
-            <div></div>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label for="editProjectTitle" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Title</label>
-                <input type="text" id="editProjectTitle" placeholder="Edit project title"
-                       class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
-            </div>
-        <div>
-                <label for="editProjectDescription" class="block text-[#C7B89B] text-sm font-bold mb-2">Project Description</label>
-                <textarea id="editProjectDescription" placeholder="Edit project description"
-                          class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]"></textarea>
-            </div>
-        </div>
-        <div class="mt-8">
-            <button class="w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline">
-                Save Changes
-            </button>
-        </div>
-    </div>
-</div>
-
 
 <!-- --------------------------- CONFIRM DELETE MODAL --------------------------- -->
 <div id="confirmDeleteModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
@@ -479,24 +305,286 @@
             <button id="confirmDeleteBtn" class="bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700">Delete</button>
         </div>
     </div>
+        </div>
+
+<!-- Add the delete confirmation modal -->
+<div id="deleteTaskModal" class="fixed inset-0 w-full h-full bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="bg-[#2F2D2A] rounded-3xl p-8 w-[90%] max-w-md">
+            <div class="text-center">
+                <h2 class="text-[24px] font-semibold text-[#D2C5A5] mb-4">Delete Task</h2>
+                <p class="text-[#C7B89B] mb-8">Are you sure you want to delete this task? This action cannot be undone.</p>
+                <div class="flex justify-center space-x-4">
+                    <button id="cancelDeleteTask" class="bg-[#C7B89B] text-[#2D2A2A] rounded-xl px-6 py-2 font-bold hover:bg-[#B8A98B]">Cancel</button>
+                    <button id="confirmDeleteTask" class="bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ----------------------------------------------------------------------- -->
 <!--                                 SCRIPT -------------------------------- -->
-     <script>
-        const monthYear = document.getElementById("monthYear");
-        const calendarDays = document.getElementById("calendarDays");
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM Content Loaded - Setting up event handlers');
 
-        let currentDate = new Date();
-        let tasks = {}; // Stores tasks keyed by 'YYYY-MM-DD'
+        // Settings options toggle for both tasks and projects
+        const settingsIcons = document.querySelectorAll('.task-settings-icon, .project-settings-icon');
+        console.log('Found settings icons:', settingsIcons.length);
 
-        function formatDateKey(date) {
-            return date.toISOString().split('T')[0];
+        settingsIcons.forEach((icon) => {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Get the options menu for this icon
+                const options = this.nextElementSibling;
+                console.log('Options menu found:', options);
+                
+                // Hide all other options menus
+                document.querySelectorAll('.task-options, .project-options').forEach(menu => {
+                    if (menu !== options) {
+                        menu.classList.add('hidden');
+                    }
+                });
+                
+                // Toggle this options menu
+                options.classList.toggle('hidden');
+                console.log('Options menu visibility toggled:', !options.classList.contains('hidden'));
+            });
+        });
+
+        // Close settings when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.task-settings-icon') && !e.target.closest('.project-settings-icon') && 
+                !e.target.closest('.task-options') && !e.target.closest('.project-options')) {
+                document.querySelectorAll('.task-options, .project-options').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+
+        // Prevent options menu from closing when clicking inside it
+        document.querySelectorAll('.task-options, .project-options').forEach((menu) => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        // Add a test click handler to verify event binding
+        document.body.addEventListener('click', function(e) {
+            console.log('Body clicked at:', e.target);
+        });
+
+        // Add form submission handler for delete task
+        document.querySelectorAll('form[action*="tasks/destroy"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to delete this task?')) {
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-HTTP-Method-Override': 'DELETE'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Redirect to dashboard
+                            window.location.href = '{{ route("dashboard") }}';
+                        } else {
+                            throw new Error(data.message || 'Failed to delete task');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting task:', error);
+                        alert('Error deleting task: ' + error.message);
+                    });
+                }
+            });
+        });
+
+        // Delete Task Modal handling
+        const deleteTaskModal = document.getElementById('deleteTaskModal');
+        const cancelDeleteTask = document.getElementById('cancelDeleteTask');
+        const confirmDeleteTask = document.getElementById('confirmDeleteTask');
+        let taskToDelete = null;
+
+        // Show delete modal
+        document.querySelectorAll('.delete-task-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                taskToDelete = this.dataset.taskId;
+                deleteTaskModal.classList.remove('hidden');
+            });
+        });
+
+        // Hide delete modal
+        cancelDeleteTask.addEventListener('click', function() {
+            deleteTaskModal.classList.add('hidden');
+            taskToDelete = null;
+        });
+
+        // Handle delete confirmation
+        confirmDeleteTask.addEventListener('click', function() {
+            if (taskToDelete) {
+                const baseUrl = window.location.pathname.split('/dashboard')[0];
+                fetch(`${baseUrl}/tasks/${taskToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close modal and redirect to dashboard
+                        deleteTaskModal.classList.add('hidden');
+                        window.location.href = '{{ route("dashboard") }}';
+                    } else {
+                        throw new Error(data.message || 'Failed to delete task');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting task:', error);
+                    alert('Error deleting task: ' + error.message);
+                });
+            }
+        });
+
+        // Close modal when clicking outside
+        deleteTaskModal.addEventListener('click', function(e) {
+            if (e.target === deleteTaskModal) {
+                deleteTaskModal.classList.add('hidden');
+                taskToDelete = null;
+            }
+        });
+
+        // Handle project deletion
+        document.querySelectorAll('.delete-project-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this project?')) {
+                    const projectId = this.dataset.projectId;
+                    const baseUrl = window.location.pathname.split('/dashboard')[0];
+                    fetch(`${baseUrl}/projects/${projectId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            throw new Error(data.message || 'Failed to delete project');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting project:', error);
+                        alert('Error deleting project: ' + error.message);
+                    });
+                }
+            });
+        });
+
+        // Handle project completion toggle
+        document.querySelectorAll('.toggle-project-complete').forEach(button => {
+            button.addEventListener('click', function() {
+                if (confirm('Are you sure you want to mark this project as complete?')) {
+                    const projectId = this.dataset.projectId;
+                    const baseUrl = window.location.pathname.split('/dashboard')[0];
+                    fetch(`${baseUrl}/projects/${projectId}/toggle-complete`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            throw new Error(data.message || 'Failed to mark project as complete');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking project as complete:', error);
+                        alert('Error marking project as complete: ' + error.message);
+                    });
+                }
+            });
+        });
+
+        // Handle task completion
+        document.querySelectorAll('.toggle-task-complete').forEach(button => {
+            button.addEventListener('click', function() {
+                if (confirm('Are you sure you want to mark this task as complete?')) {
+                    const taskId = this.dataset.taskId;
+                    const baseUrl = window.location.pathname.split('/dashboard')[0];
+                    fetch(`${baseUrl}/tasks/${taskId}/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            throw new Error(data.message || 'Failed to mark task as complete');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking task as complete:', error);
+                        alert('Error marking task as complete: ' + error.message);
+                    });
+                }
+            });
+        });
+
+        // Rest of your existing JavaScript code...
+    });
+
+    const monthYear = document.getElementById("monthYear");
+    const calendarDays = document.getElementById("calendarDays");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentDate = new Date();
+    let tasks = {}; // Stores tasks keyed by 'YYYY-MM-DD'
+
+    function formatDateKey(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    // Load calendar data from backend
+    async function loadCalendarData() {
+        try {
+            const response = await fetch('/dashboard/calendar');
+            if (response.ok) {
+                tasks = await response.json();
+                renderCalendar(currentDate);
+            } else {
+                console.error('Failed to load calendar data');
+            }
+        } catch (error) {
+            console.error('Error loading calendar data:', error);
         }
+    }
 
-        function renderCalendar(date) {
+    // Load initial calendar data
+    loadCalendarData();
+
+    function renderCalendar(date) {
         const year = date.getFullYear();
         const month = date.getMonth();
         const firstDay = new Date(year, month, 1);
@@ -504,178 +592,112 @@
         const startDay = firstDay.getDay();
         const totalDays = lastDay.getDate();
 
-<!-- ----------------------------- Test Tasks ------------------------------ -->
-    let tasks = {};
-    tasks['2025-05-20'] = ['Clean Up Old Code'];
-    tasks['2025-05-22'] = ['Meeting with Client', 'Prepare Presentation'];
-    tasks['2025-05-28'] = ['Submit Report'];
+        monthYear.textContent = `${date.toLocaleString("default", { month: "long" })} ${year}`;
+        calendarDays.innerHTML = "";
 
-<!-- ----------------------------- Test tasks ------------------------------ -->
+        const totalCells = 42; // 6 rows * 7 days
+        let dayCounter = 1;
 
-    monthYear.textContent = `${date.toLocaleString("default", { month: "long" })} ${year}`;
-    calendarDays.innerHTML = "";
+        for (let i = 0; i < totalCells; i++) {
+            const cell = document.createElement("div");
 
-    const totalCells = 42; // 6 rows * 7 days
-    let dayCounter = 1;
+            if (i < startDay || dayCounter > totalDays) {
+                cell.classList.add("text-gray-600");
+                cell.textContent = ""; // Empty cell
+            } else {
+                const dateObj = new Date(year, month, dayCounter);
+                const dateKey = formatDateKey(dateObj);
+                const isToday = 
+                    dayCounter === new Date().getDate() &&
+                    month === new Date().getMonth() &&
+                    year === new Date().getFullYear();
+                const hasTask = tasks[dateKey] && tasks[dateKey].length > 0;
 
-    for (let i = 0; i < totalCells; i++) {
-        const cell = document.createElement("div");
+                cell.className = `py-7 rounded-lg cursor-pointer relative text-center text-gray-100 ${
+                    isToday ? 'bg-[#1B1A1B] text-white font-bold' : 'hover:bg-gray-700'
+                }`;
 
-        if (i < startDay || dayCounter > totalDays) {
-            cell.classList.add("text-gray-600");
-            cell.textContent = ""; // Empty cell
-        } else {
-            const dateObj = new Date(year, month, dayCounter);
-            const dateKey = formatDateKey(dateObj);
-            const isToday =
-                dayCounter === new Date().getDate() &&
-                month === new Date().getMonth() &&
-                year === new Date().getFullYear();
-            const hasTask = tasks[dateKey] && tasks[dateKey].length > 0;
+                cell.innerHTML = `${dayCounter}`;
 
-             cell.className = `py-7 rounded-lg cursor-pointer relative text-center text-gray-100 ${
-                        isToday ? 'bg-[#1B1A1B] text-white font-bold' : 'hover:bg-gray-700'
-                    }`;
+                if (hasTask) {
+                    // Group tasks by priority
+                    const tasksByPriority = tasks[dateKey].reduce((acc, task) => {
+                        if (!acc[task.priority]) acc[task.priority] = [];
+                        acc[task.priority].push(task);
+                        return acc;
+                    }, {});
 
-            cell.innerHTML = `${dayCounter}`;
+                    // Create indicators for each priority level
+                    Object.entries(tasksByPriority).forEach(([priority, priorityTasks]) => {
+                        const indicator = document.createElement('div');
+                        const color = priority === '3' ? '#ef4444' : // High priority - red
+                                    priority === '2' ? '#f59e0b' : // Medium priority - orange
+                                    '#22c55e'; // Low priority - green
+                        
+                        indicator.className = 'absolute bottom-1 left-1 right-1 h-1.5 rounded';
+                        indicator.style.backgroundColor = color;
+                        cell.appendChild(indicator);
 
-            if (hasTask) {
-                const indicator = document.createElement('div');
-                indicator.className = 'absolute bottom-1 left-1 right-1 h-1 bg-[#D2C5A5] rounded'; // Small green line
-                cell.appendChild(indicator);
+                        // Add tooltip with task details
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'absolute z-50 hidden bg-[#2F2D2A] text-white p-2 rounded-lg shadow-lg text-sm whitespace-nowrap';
+                        tooltip.style.bottom = '100%';
+                        tooltip.style.left = '50%';
+                        tooltip.style.transform = 'translateX(-50%)';
+                        tooltip.style.marginBottom = '0.5rem';
+                        
+                        const taskList = priorityTasks.map(task => 
+                            `<div class="mb-1">
+                                <span class="font-semibold">${task.title}</span>
+                                <span class="text-xs ml-2">(${task.priority === '3' ? 'High' : task.priority === '2' ? 'Medium' : 'Low'} priority)</span>
+                            </div>`
+                        ).join('');
+                        
+                        tooltip.innerHTML = taskList;
+                        cell.appendChild(tooltip);
+
+                        // Show/hide tooltip on hover
+                        cell.addEventListener('mouseenter', () => {
+                            tooltip.classList.remove('hidden');
+                        });
+                        cell.addEventListener('mouseleave', () => {
+                            tooltip.classList.add('hidden');
+                        });
+                    });
+                }
+
+                dayCounter++;
             }
 
-            dayCounter++;
+            calendarDays.appendChild(cell);
         }
-
-        calendarDays.appendChild(cell);
-
-
-
-
     }
-}
 
-        prevBtn.addEventListener("click", () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar(currentDate);
-        });
-
-        nextBtn.addEventListener("click", () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar(currentDate);
-        });
-
-
-
-        // Initial render of the calendar
+    prevBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar(currentDate);
-
-
-<!-- ------------------------- SCRIPTS FOR MODALS -------------------------- -->
-
-
-        const addbutton = document.getElementById('addbutton');
-    const addTaskModal = document.getElementById('addTaskModal');
-    const closeAddTaskModal = document.getElementById('closeAddTaskModal');
-    const addProjectModal = document.getElementById('addProjectModal');
-    const closeAddProjectModal = document.getElementById('closeAddProjectModal');
-    const openAddProjectModalBtn = document.getElementById('openAddProjectModalBtn');
-    const closeEditTaskModal = document.getElementById('closeEditTaskModal');
-    const editTaskModal = document.getElementById('editTaskModal');
-    const openEditTaskModalBtn = document.getElementById('openEditTaskModalBtn');
-    const closeEditProjectModal = document.getElementById('closeEditProjectModal');
-    const editProjectModal = document.getElementById('editProjectModal');
-
-    function openModal(modal) {
-        modal.classList.remove('hidden');
-    }
-
-    function closeModal(modal) {
-        modal.classList.add('hidden');
-    }
-
-    addbutton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent immediate close
-        openModal(addTaskModal);
     });
 
-    closeAddTaskModal.addEventListener('click', () => closeModal(addTaskModal));
-    closeAddProjectModal.addEventListener('click', () => closeModal(addProjectModal));
-    closeEditTaskModal.addEventListener('click', () => closeModal(editTaskModal));
-    closeEditProjectModal.addEventListener('click', () => closeModal(editProjectModal));
-
-
-    if (openAddProjectModalBtn) {
-        openAddProjectModalBtn.addEventListener('click', () => {
-            openModal(addProjectModal);
-        });
-    }
-
-
-
-    const taskSettingsIcons = document.querySelectorAll('.task-settings-icon');
-
-    taskSettingsIcons.forEach(icon => {
-        icon.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const taskOptions = icon.nextElementSibling;
-            taskOptions.classList.toggle('hidden');
-        });
+    nextBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate);
     });
 
-    window.addEventListener('click', (event) => {
-        document.querySelectorAll('.task-options').forEach(options => {
-            options.classList.add('hidden');
-        });
-    });
+    // Initial render of the calendar
+    renderCalendar(currentDate);
+</script>
 
+@if(session('success'))
+    <div class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        {{ session('success') }}
+        </div>
+@endif
 
-    function editTask() {
-        openModal(editTaskModal);
-    }
-
-    let deleteAction = null;
-
-function openConfirmDeleteModal(action) {
-    deleteAction = action;
-    openModal(document.getElementById('confirmDeleteModal'));
-}
-
-function closeConfirmDeleteModal() {
-    closeModal(document.getElementById('confirmDeleteModal'));
-    deleteAction = null;
-}
-
-const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-
-if (cancelDeleteBtn) {
-    cancelDeleteBtn.addEventListener('click', closeConfirmDeleteModal);
-}
-if (confirmDeleteBtn) {
-    confirmDeleteBtn.addEventListener('click', function() {
-        if (typeof deleteAction === 'function') {
-            deleteAction();
-        }
-        closeConfirmDeleteModal();
-    });
-}
-
-    function deleteTask() {
-        openConfirmDeleteModal(function() {
-            alert("Task deleted!");
-            // Place your actual delete logic here
-        });
-    }
-
-    function deleteProject() {
-        openConfirmDeleteModal(function() {
-            alert("Project deleted!");
-            // Place your actual delete logic here
-        });
-    }
-    </script>
+@if(session('error'))
+    <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        {{ session('error') }}
+    </div>
+@endif
 </body>
 
 </html>

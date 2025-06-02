@@ -91,14 +91,14 @@
         <div class="flex justify-center items-center gap-4 mt-6">
             <!-- Google Button -->
             <a href="{{ route('auth.provider', 'google') }}" class="w-40 h-9 flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
-                <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Google</span>
+                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
+                    <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Google</span>
             </a>
 
             <!-- Facebook Button -->
             <a href="{{ route('auth.provider', 'facebook') }}" class="w-40 h-9 flex items-center justify-center gap-3 px-4 py-2 bg-white rounded-full shadow-md">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-4 h-4">
-                <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Facebook</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-4 h-4">
+                    <span class="text-xs font-bold text-zinc-800 font-['Istok_Web']">Facebook</span>
             </a>
         </div>
 

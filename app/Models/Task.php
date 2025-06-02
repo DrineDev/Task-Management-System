@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    const PRIORITY_LOW = 1;
+    const PRIORITY_MEDIUM = 2;
+    const PRIORITY_HIGH = 3;
+
     protected $fillable = [
         'title',
         'description',
@@ -13,6 +17,7 @@ class Task extends Model
         'is_completed',
         'priority',
         'user_id',
+        'project_id',
         'progress',
     ];
 
@@ -24,5 +29,20 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function getPriorityTextAttribute()
+    {
+        return match($this->priority) {
+            self::PRIORITY_LOW => 'Low',
+            self::PRIORITY_MEDIUM => 'Medium',
+            self::PRIORITY_HIGH => 'High',
+            default => 'Unknown'
+        };
     }
 }
