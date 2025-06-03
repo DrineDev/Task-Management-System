@@ -36,9 +36,9 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         try {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
                 'deadline' => 'required|date',
                 'priority' => 'required|integer|in:1,2,3',
                 'project_id' => 'nullable|string',
@@ -132,59 +132,6 @@ class TaskController extends Controller
         } catch (\Exception $e) {
             \Log::error('Task update error: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error updating task: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Delete a task
-     */
-    public function destroy($id)
-    {
-        try {
-            $user = Auth::user();
-
-            // First, verify the task belongs to the user
-            $checkResponse = Http::withHeaders([
-                'apikey' => config('services.supabase.key'),
-                'Authorization' => 'Bearer ' . config('services.supabase.key'),
-                'Content-Type' => 'application/json',
-            ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
-                'id' => 'eq.' . $id,
-                'user_id' => 'eq.' . $user->id
-            ]);
-
-            if (!$checkResponse->successful() || empty($checkResponse->json())) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Task not found or access denied'
-                ], 404);
-            }
-
-            // Delete the task
-            $response = Http::withHeaders([
-                'apikey' => config('services.supabase.key'),
-                'Authorization' => 'Bearer ' . config('services.supabase.key'),
-                'Content-Type' => 'application/json'
-            ])->delete(config('services.supabase.url') . '/rest/v1/tasks?id=eq.' . $id . '&user_id=eq.' . $user->id);
-
-            if ($response->successful()) {
-                // Update task counters
-                $dashboardController = new DashboardController();
-                $dashboardController->updateTaskCounters($user->id);
-                return response()->json(['success' => true]);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete task: ' . $response->body()
-            ], $response->status());
-
-        } catch (\Exception $e) {
-            \Log::error('Task deletion error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error deleting task: ' . $e->getMessage()
-            ], 500);
         }
     }
 
@@ -384,55 +331,47 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing a task
+     * Get task data for editing
      */
     public function edit($id)
     {
         try {
             $user = Auth::user();
-            \Log::info('Fetching task for edit', ['id' => $id, 'user_id' => $user->id]);
 
-            // Get user profile
-            $profileResponse = Http::withHeaders([
+            // Get task data first
+            $taskResponse = Http::withHeaders([
                 'apikey' => config('services.supabase.key'),
                 'Authorization' => 'Bearer ' . config('services.supabase.key'),
                 'Content-Type' => 'application/json',
-            ])->get(config('services.supabase.url') . '/rest/v1/profiles', [
-                'user_id' => 'eq.' . $user->id
-            ]);
-
-            $profile = $profileResponse->successful() && !empty($profileResponse->json()) ? $profileResponse->json()[0] : null;
-
-            $url = config('services.supabase.url') . '/rest/v1/tasks';
-            $params = [
+            ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
                 'id' => 'eq.' . $id,
                 'user_id' => 'eq.' . $user->id,
                 'select' => 'id,title,description,deadline,priority,project_id,progress,is_completed'
-            ];
+            ]);
 
-            $response = Http::withHeaders([
-                'apikey' => config('services.supabase.key'),
-                'Authorization' => 'Bearer ' . config('services.supabase.key'),
-                'Content-Type' => 'application/json',
-            ])->get($url, $params);
-
-            if (!$response->successful()) {
+            if (!$taskResponse->successful()) {
                 \Log::error('Failed to fetch task for edit', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
+                    'status' => $taskResponse->status(),
+                    'body' => $taskResponse->body()
                 ]);
-                return redirect()->route('dashboard')->with('error', 'Failed to fetch task data');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to fetch task data'
+                ], 500);
             }
 
-            $data = $response->json();
-            if (empty($data)) {
-                return redirect()->route('dashboard')->with('error', 'Task not found');
+            $taskData = $taskResponse->json();
+            if (empty($taskData)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Task not found'
+                ], 404);
             }
 
-            $task = $data[0];
+            $task = $taskData[0];
             // Format the deadline to YYYY-MM-DD for the date input
             $task['deadline'] = date('Y-m-d', strtotime($task['deadline']));
-            
+
             // Get projects for the dropdown
             $projectsResponse = Http::withHeaders([
                 'apikey' => config('services.supabase.key'),
@@ -445,11 +384,10 @@ class TaskController extends Controller
 
             $projects = $projectsResponse->successful() ? $projectsResponse->json() : [];
 
-            return view('dashboard.edit-task', [
+            return response()->json([
+                'success' => true,
                 'task' => $task,
-                'projects' => $projects,
-                'profile' => $profile,
-                'user' => $user
+                'projects' => $projects
             ]);
 
         } catch (\Exception $e) {
@@ -457,7 +395,10 @@ class TaskController extends Controller
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return redirect()->route('dashboard')->with('error', 'Error loading task: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error loading task: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -468,9 +409,20 @@ class TaskController extends Controller
     {
         try {
             $user = Auth::user();
-            
+
+            // Get user profile
+            $profileResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/profiles', [
+                'user_id' => 'eq.' . $user->id
+            ]);
+
+            $profile = $profileResponse->successful() && !empty($profileResponse->json()) ? $profileResponse->json()[0] : null;
+
             // Get projects for the dropdown
-            $response = Http::withHeaders([
+            $projectsResponse = Http::withHeaders([
                 'apikey' => config('services.supabase.key'),
                 'Authorization' => 'Bearer ' . config('services.supabase.key'),
                 'Content-Type' => 'application/json',
@@ -479,10 +431,12 @@ class TaskController extends Controller
                 'order' => 'created_at.desc'
             ]);
 
-            $projects = $response->successful() ? $response->json() : [];
+            $projects = $projectsResponse->successful() ? $projectsResponse->json() : [];
 
-            return view('dashboard.add-task', [
-                'projects' => $projects
+            return view('dashboard.create-task', [
+                'projects' => $projects,
+                'profile' => $profile,
+                'user' => $user
             ]);
 
         } catch (\Exception $e) {
@@ -546,23 +500,92 @@ class TaskController extends Controller
                 'Prefer' => 'return=minimal'
             ])->patch(config('services.supabase.url') . '/rest/v1/tasks?id=eq.' . $id . '&user_id=eq.' . $user->id, [
                 'is_completed' => true,
-                'progress' => 100
+                'progress' => 100,
+                'updated_at' => now()->toIso8601String()
             ]);
 
             if ($response->successful()) {
-                // Update task counters
-                $dashboardController = new DashboardController();
-                $dashboardController->updateTaskCounters($user->id);
-                return response()->json(['success' => true]);
-            } else {
-                throw new \Exception('Failed to complete task');
+                return redirect()->route('dashboard')->with('success', 'Task marked as complete');
             }
+
+            return redirect()->route('dashboard')->with('error', 'Failed to complete task: ' . $response->body());
+
         } catch (\Exception $e) {
-            \Log::error('Error completing task', [
+            \Log::error('Error completing task: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'Error completing task: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get task data for editing.
+     */
+    public function getTask($taskId)
+    {
+        try {
+            \Log::info('Fetching task', ['id' => $taskId, 'user_id' => auth()->id()]);
+
+            $response = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
+                'id' => 'eq.' . $taskId,
+                'user_id' => 'eq.' . auth()->id(),
+                'select' => 'id,title,description,deadline,priority,project_id,progress,is_completed'
+            ]);
+
+            \Log::info('Supabase response', [
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            if (!$response->successful()) {
+                \Log::error('Failed to fetch task', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                return response()->json(['error' => 'Failed to fetch task'], 500);
+            }
+
+            $tasks = $response->json();
+            if (empty($tasks)) {
+                \Log::warning('Task not found', ['id' => $taskId]);
+                return response()->json(['error' => 'Task not found'], 404);
+            }
+
+            $task = $tasks[0];
+            // Format the deadline to YYYY-MM-DD for the date input
+            $task['deadline'] = date('Y-m-d', strtotime($task['deadline']));
+            
+            \Log::info('Task found', ['task' => $task]);
+            return response()->json($task);
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching task', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Delete a task
+     */
+    public function destroy($id)
+    {
+        $user = Auth::user();
+
+        $response = Http::withHeaders([
+            'apikey' => config('services.supabase.key'),
+            'Authorization' => 'Bearer ' . config('services.supabase.key'),
+            'Content-Type' => 'application/json'
+        ])->delete(config('services.supabase.url') . '/rest/v1/tasks?id=eq.' . $id . '&user_id=eq.' . $user->id);
+
+        if ($response->successful()) {
+            return redirect()->route('dashboard')->with('success', 'Task deleted successfully');
+        }
+
+        return redirect()->route('dashboard')->with('error', 'Failed to delete task: ' . $response->body());
     }
 }
