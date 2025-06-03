@@ -11,51 +11,43 @@
 
 @layer components {
     .modal {
-        @apply fixed inset-0 z-50 hidden overflow-y-auto bg-black/50;
-    }
-
-    .modal.active {
-        @apply block;
-    }
-
-    .modal-overlay {
-        @apply fixed inset-0 bg-black/50 transition-opacity duration-300;
+        @apply fixed inset-0 z-50 overflow-y-auto bg-black/50;
     }
 
     .modal-content {
-        @apply relative inline-block align-middle bg-secondary rounded-2xl text-left overflow-hidden shadow-xl transform transition-all duration-300 my-6 mx-auto max-w-2xl w-full p-6;
+        @apply relative inline-block align-middle bg-[#2F2D2A] rounded-3xl text-left overflow-hidden shadow-xl transform transition-all duration-300 my-6 mx-auto max-w-md w-full p-8;
     }
 
     .modal-header {
-        @apply flex justify-between items-center mb-4;
+        @apply flex justify-between items-center mb-6;
     }
 
     .modal-title {
-        @apply text-lg font-medium text-primary;
+        @apply text-[24px] font-semibold text-[#D2C5A5];
     }
 
     .modal-close {
-        @apply text-primary cursor-pointer transition-colors duration-200 hover:text-[#D2C5A5];
+        @apply text-[#D2C5A5] hover:text-[#C7B89B] cursor-pointer transition-colors duration-200;
     }
 
     .form-input {
-        @apply mt-1 block w-full rounded-md bg-[#3D3D3D] border border-primary text-primary px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20;
+        @apply shadow appearance-none border rounded-xl w-full py-3 px-4 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5] text-lg;
     }
 
     .form-label {
-        @apply block text-sm font-medium text-primary mb-1;
+        @apply block text-[#C7B89B] text-sm font-bold mb-2;
     }
 
     .btn-primary {
-        @apply px-4 py-2 text-sm font-medium text-secondary bg-primary rounded-md transition-colors duration-200 hover:bg-[#B8A98B];
+        @apply w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline;
     }
 
     .btn-secondary {
-        @apply px-4 py-2 text-sm font-medium text-primary transition-colors duration-200 hover:text-[#D2C5A5];
+        @apply bg-[#C7B89B] text-[#2F2D2A] rounded-xl px-6 py-2 font-bold hover:bg-[#B8A98B];
     }
 
     .btn-danger {
-        @apply px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md transition-colors duration-200 hover:bg-red-700;
+        @apply bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700;
     }
 }
 

@@ -14,43 +14,175 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // Update task counters
-        $this->updateTaskCounters($user->id);
+            // Get user profile
+            $profileResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/profiles', [
+                'user_id' => 'eq.' . $user->id
+            ]);
 
-        // Get user's profile
-        $profileResponse = Http::withHeaders([
-            'apikey' => config('services.supabase.key'),
-            'Authorization' => 'Bearer ' . config('services.supabase.key'),
-            'Content-Type' => 'application/json',
-        ])->get(config('services.supabase.url') . '/rest/v1/user_profiles', [
-            'id' => 'eq.' . $user->id
-        ]);
+            $profile = $profileResponse->successful() && !empty($profileResponse->json()) ? $profileResponse->json()[0] : null;
 
-        $profile = null;
-        if ($profileResponse->successful() && !empty($profileResponse->json())) {
-            $profile = $profileResponse->json()[0];
+            // Get tasks
+            $tasksResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
+                'user_id' => 'eq.' . $user->id,
+                'order' => 'deadline.asc'
+            ]);
+
+            $tasks = $tasksResponse->successful() ? $tasksResponse->json() : [];
+
+            // Get all projects for dashboard
+            $projectsResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/projects', [
+                'user_id' => 'eq.' . $user->id,
+                'order' => 'created_at.desc'
+            ]);
+
+            $projects = $projectsResponse->successful() ? $projectsResponse->json() : [];
+
+            // Get incomplete projects for task modals
+            $incompleteProjectsResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/projects', [
+                'user_id' => 'eq.' . $user->id,
+                'is_completed' => 'eq.false',
+                'order' => 'created_at.desc'
+            ]);
+
+            $incompleteProjects = $incompleteProjectsResponse->successful() ? $incompleteProjectsResponse->json() : [];
+
+            // Calculate stats
+            $stats = [
+                'ongoing' => count(array_filter($tasks, function($task) {
+                    return !($task['is_completed'] ?? false);
+                })),
+                'completed' => count(array_filter($tasks, function($task) {
+                    return $task['is_completed'] ?? false;
+                })),
+                'overdue' => count(array_filter($tasks, function($task) {
+                    return !($task['is_completed'] ?? false) && 
+                           strtotime($task['deadline']) < strtotime('today');
+                }))
+            ];
+
+            // Support for edit modal
+            $editTask = null;
+            $editProject = null;
+            if ($request->has('edit_task')) {
+                $editTaskId = $request->get('edit_task');
+                $editTaskResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                    'Content-Type' => 'application/json',
+                ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
+                    'id' => 'eq.' . $editTaskId,
+                    'user_id' => 'eq.' . $user->id,
+                    'select' => 'id,title,description,deadline,priority,project_id,progress,is_completed'
+                ]);
+                $editTaskData = $editTaskResponse->successful() ? $editTaskResponse->json() : [];
+                if (!empty($editTaskData)) {
+                    $editTask = $editTaskData[0];
+                    $editTask['deadline'] = date('Y-m-d', strtotime($editTask['deadline']));
+                }
+            }
+
+            // Support for edit project modal
+            if ($request->has('edit_project')) {
+                $editProjectId = $request->get('edit_project');
+                $editProjectResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                    'Content-Type' => 'application/json',
+                ])->get(config('services.supabase.url') . '/rest/v1/projects', [
+                    'id' => 'eq.' . $editProjectId,
+                    'user_id' => 'eq.' . $user->id
+                ]);
+                $editProjectData = $editProjectResponse->successful() ? $editProjectResponse->json() : [];
+                if (!empty($editProjectData)) {
+                    $editProject = $editProjectData[0];
+                }
+            }
+
+            // Support for delete modal
+            $deleteTask = null;
+            $deleteProject = null;
+            if ($request->has('delete_task')) {
+                $deleteTaskId = $request->get('delete_task');
+                $deleteTaskResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                    'Content-Type' => 'application/json',
+                ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
+                    'id' => 'eq.' . $deleteTaskId,
+                    'user_id' => 'eq.' . $user->id,
+                    'select' => 'id,title'
+                ]);
+                $deleteTaskData = $deleteTaskResponse->successful() ? $deleteTaskResponse->json() : [];
+                if (!empty($deleteTaskData)) {
+                    $deleteTask = $deleteTaskData[0];
+                }
+            }
+
+            // Support for delete project modal
+            if ($request->has('delete_project')) {
+                $deleteProjectId = $request->get('delete_project');
+                $deleteProjectResponse = Http::withHeaders([
+                    'apikey' => config('services.supabase.key'),
+                    'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                    'Content-Type' => 'application/json',
+                ])->get(config('services.supabase.url') . '/rest/v1/projects', [
+                    'id' => 'eq.' . $deleteProjectId,
+                    'user_id' => 'eq.' . $user->id
+                ]);
+                $deleteProjectData = $deleteProjectResponse->successful() ? $deleteProjectResponse->json() : [];
+                if (!empty($deleteProjectData)) {
+                    $deleteProject = $deleteProjectData[0];
+                }
+            }
+
+            // Support for add task modal
+            $addTask = $request->has('add_task');
+            // Support for add project modal
+            $addProject = $request->has('add_project');
+
+            // Get projects for the add task modal (only incomplete ones)
+            $projectsForTask = $incompleteProjects;
+
+            return view('dashboard.dashboard', [
+                'user' => $user,
+                'profile' => $profile,
+                'tasks' => $tasks,
+                'projects' => $projects,
+                'stats' => $stats,
+                'editTask' => $editTask,
+                'editProject' => $editProject,
+                'deleteTask' => $deleteTask,
+                'deleteProject' => $deleteProject,
+                'addTask' => $addTask,
+                'addProject' => $addProject,
+                'projectsForTask' => $projectsForTask
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Dashboard error: ' . $e->getMessage());
+            return redirect()->route('login')->with('error', 'Error loading dashboard: ' . $e->getMessage());
         }
-
-        // Get tasks count by status from user_profiles
-        $stats = [
-            'ongoing' => $profile['ongoing_tasks'] ?? 0,
-            'completed' => $profile['completed_tasks'] ?? 0,
-            'overdue' => $profile['overdue_tasks'] ?? 0,
-        ];
-
-        // Get tasks from TaskController
-        $taskController = new TaskController();
-        $tasks = $taskController->index();
-
-        // Get projects from ProjectController
-        $projectController = new ProjectController();
-        $projects = $projectController->index();
-
-        return view('dashboard.dashboard', compact('user', 'profile', 'stats', 'projects', 'tasks'));
     }
 
     /**
@@ -328,7 +460,10 @@ class DashboardController extends Controller
         return redirect()->route('dashboard')->with('error', 'Failed to delete task: ' . $response->body());
     }
 
-    private function updateTaskCounters($userId)
+    /**
+     * Update task counters for a user
+     */
+    public function updateTaskCounters($userId)
     {
         try {
             // Get all tasks for the user
@@ -337,54 +472,34 @@ class DashboardController extends Controller
                 'Authorization' => 'Bearer ' . config('services.supabase.key'),
                 'Content-Type' => 'application/json',
             ])->get(config('services.supabase.url') . '/rest/v1/tasks', [
-                'user_id' => 'eq.' . $userId,
-                'select' => 'is_completed,deadline'
+                'user_id' => 'eq.' . $userId
             ]);
 
             if (!$response->successful()) {
-                \Log::error('Failed to fetch tasks for counter update');
-                return;
+                throw new \Exception('Failed to fetch tasks');
             }
 
             $tasks = $response->json();
-            $now = now();
 
-            // Calculate counters
-            $ongoingTasks = 0;
-            $completedTasks = 0;
-            $overdueTasks = 0;
+            // Calculate stats
+            $stats = [
+                'ongoing' => count(array_filter($tasks, function($task) {
+                    return !($task['is_completed'] ?? false);
+                })),
+                'completed' => count(array_filter($tasks, function($task) {
+                    return $task['is_completed'] ?? false;
+                })),
+                'overdue' => count(array_filter($tasks, function($task) {
+                    return !($task['is_completed'] ?? false) && 
+                           strtotime($task['deadline']) < strtotime('today');
+                }))
+            ];
 
-            foreach ($tasks as $task) {
-                if ($task['is_completed']) {
-                    $completedTasks++;
-                } else {
-                    $deadline = \Carbon\Carbon::parse($task['deadline']);
-                    if ($deadline->isPast()) {
-                        $overdueTasks++;
-                    } else {
-                        $ongoingTasks++;
-                    }
-                }
-            }
+            return $stats;
 
-            // Update user profile with new counters
-            $updateResponse = Http::withHeaders([
-                'apikey' => config('services.supabase.key'),
-                'Authorization' => 'Bearer ' . config('services.supabase.key'),
-                'Content-Type' => 'application/json',
-                'Prefer' => 'return=minimal'
-            ])->patch(config('services.supabase.url') . '/rest/v1/user_profiles?id=eq.' . $userId, [
-                'ongoing_tasks' => $ongoingTasks,
-                'completed_tasks' => $completedTasks,
-                'overdue_tasks' => $overdueTasks,
-                'updated_at' => $now->toIso8601String()
-            ]);
-
-            if (!$updateResponse->successful()) {
-                \Log::error('Failed to update task counters in user profile');
-            }
         } catch (\Exception $e) {
             \Log::error('Error updating task counters: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

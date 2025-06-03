@@ -34,31 +34,27 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes (requires login)
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/dashboard/calendar', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar');
 
     // Project routes - Updated to use ProjectController
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/dashboard/add-project', [ProjectController::class, 'create'])->name('dashboard.add-project');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
-    Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-    Route::post('/projects/{id}/toggle-complete', [ProjectController::class, 'toggleComplete'])->name('projects.toggle-complete');
+    Route::get('/api/projects/{projectId}', [ProjectController::class, 'getProject'])->name('api.projects.get');
+    Route::put('/projects/{projectId}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{projectId}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::post('/projects/{projectId}/toggle-complete', [ProjectController::class, 'toggleComplete'])->name('projects.toggle-complete');
 
     // Task routes
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::get('/tasks/{id}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-    Route::get('/tasks/{id}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
-    Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
     Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    Route::patch('/tasks/{id}/progress', [TaskController::class, 'updateProgress'])->name('tasks.progress');
     Route::post('/tasks/{id}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
-    Route::post('/tasks/{id}/toggle-complete', [TaskController::class, 'toggleComplete'])->name('tasks.toggle-complete');
+    Route::patch('/tasks/{taskId}/progress', [TaskController::class, 'updateProgress'])->name('tasks.progress');
+    Route::post('/tasks/{taskId}/toggle-complete', [TaskController::class, 'toggleComplete'])->name('tasks.toggle-complete');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

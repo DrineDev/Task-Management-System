@@ -66,7 +66,7 @@ class ProjectController extends Controller
             return redirect()->route('dashboard')->with('success', 'Project created successfully!');
         }
 
-        return redirect()->back()->with('error', 'Failed to create project: ' . $response->body());
+        return redirect()->route('dashboard')->with('error', 'Failed to create project: ' . $response->body());
     }
 
     /**
@@ -113,13 +113,10 @@ class ProjectController extends Controller
         ])->delete(config('services.supabase.url') . '/rest/v1/projects?id=eq.' . $id . '&user_id=eq.' . $user->id);
 
         if ($response->successful()) {
-            return response()->json(['success' => true]);
+            return redirect()->route('dashboard')->with('success', 'Project deleted successfully');
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to delete project: ' . $response->body()
-        ], $response->status());
+        return redirect()->route('dashboard')->with('error', 'Failed to delete project: ' . $response->body());
     }
 
     /**
@@ -201,6 +198,82 @@ class ProjectController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             return redirect()->route('dashboard')->with('error', 'Error loading project: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get a single project
+     */
+    public function getProject($projectId)
+    {
+        try {
+            \Log::info('Fetching project', [
+                'id' => $projectId,
+                'user_id' => auth()->id(),
+                'url' => config('services.supabase.url') . '/rest/v1/projects'
+            ]);
+
+            if (!auth()->check()) {
+                \Log::warning('User not authenticated');
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            $response = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->get(config('services.supabase.url') . '/rest/v1/projects', [
+                'id' => 'eq.' . $projectId,
+                'user_id' => 'eq.' . auth()->id()
+            ]);
+
+            \Log::info('Raw Supabase response', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+                'url' => $response->effectiveUri()
+            ]);
+
+            if (!$response->successful()) {
+                \Log::error('Failed to fetch project', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'url' => $response->effectiveUri()
+                ]);
+                return response()->json(['error' => 'Failed to fetch project'], 500);
+            }
+
+            $projects = $response->json();
+            \Log::info('Parsed projects data', ['projects' => $projects]);
+
+            if (empty($projects)) {
+                \Log::warning('Project not found', [
+                    'id' => $projectId,
+                    'user_id' => auth()->id()
+                ]);
+                return response()->json(['error' => 'Project not found'], 404);
+            }
+
+            $project = $projects[0];
+            \Log::info('Project found', ['project' => $project]);
+
+            // Return a properly structured JSON response
+            return response()->json([
+                'id' => $project['id'],
+                'name' => $project['name'],
+                'description' => $project['description'] ?? '',
+                'created_at' => $project['created_at'],
+                'updated_at' => $project['updated_at']
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching project', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'project_id' => $projectId,
+                'user_id' => auth()->id()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 } 

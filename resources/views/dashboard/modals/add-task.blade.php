@@ -1,13 +1,15 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
+@php
+    $showAddTaskModal = isset($addTask) && $addTask;
+@endphp
+@if($showAddTaskModal)
+<!-- Add Task Modal -->
+<div id="addTaskModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
     <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2F2D2A] rounded-3xl p-8 w-full max-w-md">
         <form action="{{ route('tasks.store') }}" method="POST">
             @csrf
             <div class="flex items-center justify-between mb-6">
                 <a href="{{ route('dashboard') }}" class="text-[#D2C5A5] hover:text-[#C7B89B]">
-                    <i class="fas fa-arrow-left text-xl"></i> Back
+                    <i class="fas fa-times text-xl"></i>
                 </a>
                 <h2 class="text-[24px] font-semibold text-[#D2C5A5]">Create New Task</h2>
                 <div></div>
@@ -29,7 +31,7 @@
                     <select id="projectSelect" name="project_id" required
                             class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5]">
                         <option value="">Select a project</option>
-                        @foreach($projects as $project)
+                        @foreach($projectsForTask as $project)
                             <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
                         @endforeach
                     </select>
@@ -74,16 +76,4 @@
         </form>
     </div>
 </div>
-
-@if(session('success'))
-    <div class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        {{ session('error') }}
-    </div>
-@endif
-@endsection 
+@endif 

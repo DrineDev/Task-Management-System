@@ -22,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share user profile data with views that extend the app layout
-        View::composer(['layouts.app', 'dashboard.*', 'profile.*'], function ($view) {
+        // Share user profile data with views
+        View::composer(['dashboard.*', 'profile.*'], function ($view) {
             if (auth()->check()) {
                 $user = auth()->user();
                 \Log::info('Fetching profile for user', ['user_id' => $user->id]);
