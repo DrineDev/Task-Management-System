@@ -33,14 +33,16 @@
         <!-- Left Column -->
             <div class="md:col-span-2 space-y-6">
             <!-- Search Bar -->
-                <div class="flex items-center relative">
-                    <input type="text" placeholder="Search..." class="flex-grow bg-stone-200 rounded-xl outline-none text-stone-900/50 text-xl font-bold font-['Inter']">
-                    <button id="filterBtn" class="ml-3 p-2 bg-[#C7B89B] rounded-md hover:bg-[#7c6e5b] transition-colors ease-in-out">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 relative">
+                    <div class="flex-grow w-full">
+                        <input type="text" placeholder="Search..." class="w-full bg-stone-200 rounded-xl outline-none text-stone-900/50 text-xl font-bold font-['Inter']">
+                    </div>
+                    <button id="filterBtn" class="p-2 bg-[#C7B89B] rounded-md hover:bg-[#7c6e5b] transition-colors ease-in-out">
                         <i class="fas fa-sliders-h text-[#3D3D3]"></i>
                     </button>
                     
                     <!-- Filter Panel -->
-                    <div id="filterPanel" class="hidden absolute right-0 top-full mt-2 w-72 bg-[#2f2d2a] rounded-xl shadow-lg p-4 z-50">
+                    <div id="filterPanel" class="hidden absolute right-0 top-full mt-2 w-full sm:w-72 bg-[#2f2d2a] rounded-xl shadow-lg p-4 z-50">
                         <div class="mb-4">
                             <h3 class="text-[#C7B89B] font-semibold mb-2">Priority</h3>
                             <div class="space-y-2">
@@ -193,17 +195,17 @@
         </main>
 
     <!-- Bottom Navigation -->
-  <footer class="fixed bottom-0 left-0 right-0 w-full h-28 z-30 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
-            <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
-                <i class="fas fa-user text-[40px] mb-1"></i>
-            </a>
-        <a href="{{ route('dashboard', ['add_task' => true]) }}" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
-                <i class="fas fa-plus"></i>
+    <footer class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-tl-[36px] md:rounded-tl-[72px] rounded-tr-[36px] md:rounded-tr-[72px] flex items-center justify-around md:justify-center md:space-x-16">
+        <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+            <i class="fas fa-user text-[24px] md:text-[40px] mb-1"></i>
         </a>
-            <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
-                <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
-            </button>
-        </footer>
+        <a href="{{ route('dashboard', ['add_task' => true]) }}" class="w-16 h-16 md:w-20 md:h-20 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[24px] md:text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+            <i class="fas fa-plus"></i>
+        </a>
+        <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+            <i class="fas fa-clipboard-list text-[24px] md:text-[40px] mb-1"></i>
+        </button>
+    </footer>
 
     <!-- Modals -->
     @if(isset($editProject))

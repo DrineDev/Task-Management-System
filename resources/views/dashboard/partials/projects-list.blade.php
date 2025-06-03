@@ -11,8 +11,8 @@
     @if(count($incompleteProjects) > 0)
         @foreach($incompleteProjects as $project)
             <div class="project-item bg-[#C7B89B] rounded-lg p-4">
-                <div class="flex justify-between items-start">
-                    <div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex-grow">
                         <div class="flex items-center gap-2">
                             <h4 class="project-title font-semibold text-[#2F2D2A] mb-2">{{ $project['name'] }}</h4>
                         </div>
@@ -21,7 +21,7 @@
                             Created: {{ \Carbon\Carbon::parse($project['created_at'])->format('M d, Y') }}
                         </p>
                     </div>
-                    <div class="flex space-x-2">
+                    <div class="flex sm:justify-end space-x-2">
                         <a href="{{ route('dashboard', ['edit_project' => $project['id']]) }}" 
                            class="px-3 py-1 text-sm bg-[#2F2D2A] text-[#D2C5A5] rounded-md hover:bg-[#3D3D3D]">
                             <i class="fas fa-edit"></i>
@@ -49,8 +49,8 @@
         <div class="text-[#C7B89B] text-sm font-semibold mb-2">Completed Projects</div>
         @foreach($completeProjects as $project)
             <div class="project-item bg-[#C7B89B] rounded-lg p-4 opacity-75">
-                <div class="flex justify-between items-start">
-                    <div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex-grow">
                         <div class="flex items-center gap-2">
                             <h4 class="project-title font-semibold text-[#2F2D2A] mb-2">{{ $project['name'] }}</h4>
                             <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
