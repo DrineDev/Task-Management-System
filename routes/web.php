@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'deleteAccount'])->name('profile.delete');
 
     // Email change routes
     Route::get('/change-email', [ChangeEmailController::class, 'show'])->name('change-email.show');

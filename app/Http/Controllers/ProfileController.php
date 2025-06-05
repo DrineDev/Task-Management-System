@@ -248,12 +248,65 @@ class ProfileController extends Controller
 
                 return redirect()->route('profile.show')->with('success', 'Email updated successfully.');
             } else {
-                Log::error('Failed to update email in Supabase: ' . $response->body());
-                return redirect()->route('profile.show')->with('error', 'Failed to update email. Please try again.');
+                return back()->withErrors(['email' => 'Failed to update email. Please try again.']);
             }
         } catch (\Exception $e) {
-            Log::error('Error updating email: ' . $e->getMessage());
-            return redirect()->route('profile.show')->with('error', 'An error occurred while updating your email.');
+            Log::error('Failed to update email: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'An error occurred while updating your email.']);
+        }
+    }
+
+    /**
+     * Delete the user's account
+     */
+    public function deleteAccount(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Delete user profile from Supabase
+            $profileResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+                'Content-Type' => 'application/json',
+            ])->delete(config('services.supabase.url') . '/rest/v1/user_profiles?id=eq.' . $user->id);
+
+            if (!$profileResponse->successful()) {
+                Log::error('Failed to delete user profile from Supabase', [
+                    'status' => $profileResponse->status(),
+                    'response' => $profileResponse->json()
+                ]);
+            }
+
+            // Delete user from Supabase Auth
+            $authResponse = Http::withHeaders([
+                'apikey' => config('services.supabase.key'),
+                'Authorization' => 'Bearer ' . config('services.supabase.key'),
+            ])->delete(config('services.supabase.url') . '/auth/v1/admin/users/' . $user->id);
+
+            if (!$authResponse->successful()) {
+                Log::error('Failed to delete user from Supabase Auth', [
+                    'status' => $authResponse->status(),
+                    'response' => $authResponse->json()
+                ]);
+            }
+
+            // Delete user from Laravel
+            $user->delete();
+
+            // Logout the user
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')
+                ->with('success', 'Your account has been deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete account: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+
+            return back()->withErrors(['account' => 'Failed to delete account. Please try again later.']);
         }
     }
 }

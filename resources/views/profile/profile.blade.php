@@ -53,6 +53,73 @@
       right: 0;
       z-index: 50;
     }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #2F2D2A;
+      padding: 2rem;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 2px solid #D2C5A5;
+    }
+
+    .modal-header {
+      color: #D2C5A5;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .modal-body {
+      color: #D2C5A5;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .modal-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-button.cancel {
+      background-color: #D2C5A5;
+      color: #2F2D2A;
+    }
+
+    .modal-button.delete {
+      background-color: #dc2626;
+      color: white;
+    }
+
+    .modal-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body class="text-white">
@@ -140,10 +207,10 @@
               <a href="{{ route('change-password.show') }}" class="control-box p-4 rounded-lg text-left text-black w-full">
                 Change Password
               </a>
-              <form action="" method="POST" onsubmit="return confirmDeletion();" class="w-1/3">
+              <form action="{{ route('profile.delete') }}" method="POST" class="w-1/3">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg text-left text-white w-full">
+                <button type="button" onclick="openDeleteModal()" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg text-left text-white w-full">
                   Delete Account
                 </button>
               </form>
@@ -167,9 +234,46 @@
     </a>
   </footer>
 
+  <!-- Delete Account Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+        Delete Account
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeDeleteModal()" class="modal-button cancel">
+          Cancel
+        </button>
+        <form action="{{ route('profile.delete') }}" method="POST" class="inline">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="modal-button delete">
+            Delete Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
-    function confirmDeletion() {
-      return confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    function openDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('deleteModal');
+      if (event.target === modal) {
+        closeDeleteModal();
+      }
     }
   </script>
 </body>
