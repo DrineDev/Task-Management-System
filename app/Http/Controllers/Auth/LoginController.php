@@ -100,20 +100,18 @@ class LoginController extends Controller
     public function redirectToProvider($provider)
     {
         $supabaseUrl = config('services.supabase.url');
-        $appUrl = config('app.url');
         
         Log::info('OAuth Redirect Details:', [
             'provider' => $provider,
             'supabase_url' => $supabaseUrl,
-            'app_url' => $appUrl,
-            'callback_url' => $appUrl . '/auth/callback',
+            'callback_url' => $supabaseUrl . '/auth/v1/callback',
             'request_url' => request()->url(),
             'request_host' => request()->getHost()
         ]);
         
         $authUrl = $supabaseUrl . '/auth/v1/authorize?' . http_build_query([
             'provider' => $provider,
-            'redirect_to' => $appUrl . '/auth/callback',
+            'redirect_to' => $supabaseUrl . '/auth/v1/callback',
             'scopes' => 'email profile',
         ]);
 
@@ -126,13 +124,23 @@ class LoginController extends Controller
 
     public function supabaseCallback(Request $request)
     {
-        // Get the full URL including the fragment
-        $fullUrl = $request->fullUrl();
+        Log::info('OAuth callback received', [
+            'query' => $request->query(),
+            'fragment' => $request->fragment(),
+            'full_url' => $request->fullUrl()
+        ]);
+
+        // Get the access token from query parameters or URL fragment
+        $accessToken = $request->query('access_token');
+        if (!$accessToken) {
+            // Try to get from URL fragment
+            $fullUrl = $request->fullUrl();
+            if (preg_match('/access_token=([^&]+)/', $fullUrl, $matches)) {
+                $accessToken = $matches[1];
+            }
+        }
         
-        // Extract the access token from the URL fragment
-        if (preg_match('/access_token=([^&]+)/', $fullUrl, $matches)) {
-            $accessToken = $matches[1];
-            
+        if ($accessToken) {
             try {
                 // Get user info from Supabase using the access token
                 $supabaseUrl = config('services.supabase.url');
@@ -152,7 +160,7 @@ class LoginController extends Controller
                     Auth::login($user);
                     $request->session()->regenerate();
 
-                    // Redirect to dashboard without any confirm key
+                    // Redirect to dashboard without the access token in URL
                     return redirect()->route('dashboard');
                 }
             } catch (\Exception $e) {

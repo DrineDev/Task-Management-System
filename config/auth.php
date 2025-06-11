@@ -64,7 +64,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        App\Providers\SupabaseServiceProvider::class,
 
         // 'users' => [
         //     'driver' => 'database',

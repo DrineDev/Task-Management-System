@@ -24,14 +24,24 @@
         const SUPABASE_URL = '{{ config('services.supabase.url') }}';
         const SUPABASE_ANON_KEY = '{{ config('services.supabase.anon_key') }}';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                redirectTo: '{{ route('dashboard') }}'
+            }
+        });
 
-        // Get the hash fragment from the URL
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        
-        const accessToken = params.get('access_token');
-        const refreshToken = params.get('refresh_token');
+        // Get the access token from query parameters or URL fragment
+        const urlParams = new URLSearchParams(window.location.search);
+        let accessToken = urlParams.get('access_token');
+        let refreshToken = urlParams.get('refresh_token');
+
+        // If not in query params, try URL fragment
+        if (!accessToken) {
+            const hash = window.location.hash.substring(1);
+            const hashParams = new URLSearchParams(hash);
+            accessToken = hashParams.get('access_token');
+            refreshToken = hashParams.get('refresh_token');
+        }
 
         if (accessToken) {
             // Store the tokens in localStorage for Supabase client
@@ -41,7 +51,7 @@
                 expires_at: Date.now() + (3600 * 1000) // 1 hour from now
             }));
 
-            // Redirect to dashboard without any confirm key
+            // Redirect to dashboard without the access token in URL
             window.location.href = '{{ route('dashboard') }}';
         } else {
             console.error("No access token found in URL");

@@ -34,8 +34,10 @@ Route::middleware('guest')->group(function () {
 
 
 // Social Login Route
-Route::get('/auth/{provider}', [SocialController::class, 'redirectToProvider'])
-     ->name('auth.provider');
+Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])
+     ->name('auth.provider')
+     ->where('provider', 'google|facebook');
+
 // Authenticated Routes (requires login)
 Route::middleware(['auth'])->group(function () {
     // Dashboard
@@ -80,4 +82,3 @@ Route::middleware(['auth'])->group(function () {
 
 // OAuth callback endpoints (no auth required)
 Route::get('/auth/callback', [LoginController::class, 'supabaseCallback'])->name('auth.callback');
-Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('auth.provider')->where('provider', 'google|facebook');
