@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProjectController;
@@ -31,6 +32,10 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 });
 
+
+// Social Login Route
+Route::get('/auth/{provider}', [SocialController::class, 'redirectToProvider'])
+     ->name('auth.provider');
 // Authenticated Routes (requires login)
 Route::middleware(['auth'])->group(function () {
     // Dashboard

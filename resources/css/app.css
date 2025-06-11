@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Istok+Web&display=swap');
+
 @layer base {
     body {
         @apply bg-background text-text;
@@ -31,7 +33,8 @@
     }
 
     .form-input {
-        @apply shadow appearance-none border rounded-xl w-full py-3 px-4 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5] text-lg;
+    @apply shadow appearance-none border rounded-xl w-full py-3 px-4 text-[#2F2D2A] leading-tight
+            focus:outline-none focus:ring-2 focus:ring-[#C7B89B] bg-[#D2C5A5] text-lg;
     }
 
     .form-label {
