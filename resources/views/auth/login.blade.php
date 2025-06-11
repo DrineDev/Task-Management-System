@@ -114,18 +114,18 @@
 
         <!-- Social (gap-3, mb-6) -->
         <div class="flex justify-center items-center gap-3 mb-6">
-          <a href="{{ route('auth.provider','google') }}"
-             class="flex-1 h-8 flex items-center justify-center gap-2 bg-white rounded-full shadow
+          <a href="{{ route('auth.provider', 'google') }}"
+             class="flex-1 h-10 flex items-center justify-center gap-2 bg-white rounded-lg shadow
                     hover:opacity-90 transition-colors px-4">
-            <img src="https://www.google.com/favicon.ico" alt="Google" class="w-4 h-4">
-            <span class="text-xs font-istok font-bold text-zinc-800">Google</span>
+            <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5">
+            <span class="text-sm font-istok font-bold text-zinc-800">Google</span>
           </a>
-          <a href="{{ route('auth.provider','facebook') }}"
-             class="flex-1 h-8 flex items-center justify-center gap-2 bg-white rounded-full shadow
+          <a href="{{ route('auth.provider', 'facebook') }}"
+             class="flex-1 h-10 flex items-center justify-center gap-2 bg-white rounded-lg shadow
                     hover:opacity-90 transition-colors px-4">
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
-                 alt="Facebook" class="w-4 h-4">
-            <span class="text-xs font-istok font-bold text-zinc-800">Facebook</span>
+                 alt="Facebook" class="w-5 h-5">
+            <span class="text-sm font-istok font-bold text-zinc-800">Facebook</span>
           </a>
         </div>
 

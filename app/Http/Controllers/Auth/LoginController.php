@@ -126,61 +126,44 @@ class LoginController extends Controller
 
     public function supabaseCallback(Request $request)
     {
-        $code = $request->get('code');
-        $error = $request->get('error');
-        $errorDescription = $request->get('error_description');
+        // Get the full URL including the fragment
+        $fullUrl = $request->fullUrl();
+        
+        // Extract the access token from the URL fragment
+        if (preg_match('/access_token=([^&]+)/', $fullUrl, $matches)) {
+            $accessToken = $matches[1];
+            
+            try {
+                // Get user info from Supabase using the access token
+                $supabaseUrl = config('services.supabase.url');
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'apikey' => config('services.supabase.anon_key'),
+                ])->get($supabaseUrl . '/auth/v1/user');
 
-        if ($error) {
-            Log::error('OAuth error', [
-                'error' => $error,
-                'description' => $errorDescription
-            ]);
-            return redirect()->route('login')->with('error', 'Authentication failed: ' . $errorDescription);
-        }
+                if ($response->successful()) {
+                    $userData = $response->json();
+                    $user = User::fromSupabase($userData);
+                    
+                    // Store the tokens in session
+                    $request->session()->put('supabase_access_token', $accessToken);
+                    $request->session()->put('supabase_token_expires_at', now()->addHour());
+                    
+                    Auth::login($user);
+                    $request->session()->regenerate();
 
-        if (!$code) {
-            return redirect()->route('login')->with('error', 'No authorization code received');
-        }
-
-        $supabaseUrl = config('services.supabase.url');
-        $supabaseAnonKey = config('services.supabase.anon_key');
-
-        try {
-            $response = Http::withHeaders([
-                'apikey' => $supabaseAnonKey,
-                'Content-Type' => 'application/json',
-            ])->post($supabaseUrl . '/auth/v1/token', [
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_to' => $supabaseUrl . '/auth/v1/callback',
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $user = User::fromSupabase($data['user']);
-                
-                $request->session()->put('supabase_access_token', $data['access_token']);
-                $request->session()->put('supabase_refresh_token', $data['refresh_token'] ?? null);
-                $request->session()->put('supabase_token_expires_at', now()->addSeconds($data['expires_in']));
-                
-                Auth::login($user);
-                $request->session()->regenerate();
-
-                return redirect()->intended('/dashboard')->with('success', 'Successfully logged in!');
+                    // Redirect to dashboard without any confirm key
+                    return redirect()->route('dashboard');
+                }
+            } catch (\Exception $e) {
+                Log::error('Error during OAuth callback', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
             }
-
-            Log::error('Failed to exchange code for token', [
-                'status' => $response->status(),
-                'body' => $response->json()
-            ]);
-            return redirect()->route('login')->with('error', 'Failed to complete authentication');
-        } catch (\Exception $e) {
-            Log::error('Error during OAuth callback', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->route('login')->with('error', 'An error occurred during authentication');
         }
+
+        return redirect()->route('login')->with('error', 'Authentication failed');
     }
 
     public function logout(Request $request)

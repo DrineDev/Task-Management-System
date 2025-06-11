@@ -48,11 +48,11 @@
         @csrf
 
         <div class="space-y-1">
-          <label for="username" class="block text-white text-sm">Username</label>
-          <input id="username" name="username" type="text" value="{{ old('username') }}" required
+          <label for="name" class="block text-white text-sm">Name</label>
+          <input id="name" name="name" type="text" value="{{ old('name') }}" required
             class="bg-stone-200 text-stone-900 text-sm font-inter px-3 py-2 w-full rounded-lg
                    focus:outline-none focus:ring-2 focus:ring-[#C7B89B] transition" />
-          @error('username')
+          @error('name')
             <p class="text-red-400 text-xs">{{ $message }}</p>
           @enderror
         </div>

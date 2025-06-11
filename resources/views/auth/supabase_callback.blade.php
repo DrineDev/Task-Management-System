@@ -24,43 +24,29 @@
         const SUPABASE_URL = '{{ config('services.supabase.url') }}';
         const SUPABASE_ANON_KEY = '{{ config('services.supabase.anon_key') }}';
 
-        const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        supabase.auth.getSession().then(async ({ data, error }) => {
-            if (error || !data.session) {
-                console.error("Session error:", error);
-                alert("Failed to get session.");
-                return;
-            }
+        // Get the hash fragment from the URL
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
 
-            try {
-                const response = await fetch('/auth/supabase-login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrf,
-                    },
-                    body: JSON.stringify({
-                        access_token: data.session.access_token,
-                        refresh_token: data.session.refresh_token,
-                        user: data.session.user
-                    })
-                });
+        if (accessToken) {
+            // Store the tokens in localStorage for Supabase client
+            localStorage.setItem('supabase.auth.token', JSON.stringify({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                expires_at: Date.now() + (3600 * 1000) // 1 hour from now
+            }));
 
-                if (response.ok) {
-                    // ✅ Redirect user to dashboard
-                    window.location.href = '/dashboard';
-                } else {
-                    console.error("Login failed:", await response.text());
-                    alert('Login failed. See console for details.');
-                }
-            } catch (e) {
-                console.error("Network error:", e);
-                alert("Unexpected error. See console for details.");
-            }
-        });
+            // Redirect to dashboard without any confirm key
+            window.location.href = '{{ route('dashboard') }}';
+        } else {
+            console.error("No access token found in URL");
+            window.location.href = '{{ route('login') }}';
+        }
     </script>
 </body>
 </html>
