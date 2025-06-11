@@ -1,21 +1,10 @@
 {{-- resources/views/auth/forgot-password.blade.php --}}
 <!DOCTYPE html>
-<<<<<<< Updated upstream
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Forgot Password - Task Management System</title>
-        @vite(['resources/css/login.css', 'resources/js/app.js'])
-    </head>
-    <body class="bg-[#1E1E1E] text-[#F4EBD9] min-h-screen relative overflow-hidden">
-=======
 <html lang="{{ str_replace('_','-',app()->getLocale()) }}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Forgot Password · Task Management</title>
->>>>>>> Stashed changes
 
   <!-- Tailwind + Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,7 +13,9 @@
     .font-istok { font-family: 'Istok Web', sans-serif; }
     .font-inter { font-family: 'Inter', sans-serif; }
   </style>
-  @vite(['resources/css/app.css','resources/js/app.js'])
+
+  @vite(['resources/css/login.css','resources/js/app.js'])
+
 </head>
 <body class="h-screen overflow-hidden bg-[#1E1E1E] text-[#F4EBD9] font-istok">
 
@@ -100,15 +91,5 @@
                  flex items-center justify-center text-zinc-800 text-xs font-istok z-20">
   </footer>
 
-<<<<<<< Updated upstream
-            </div>
-         </div>
-
-             <!-- BOTTOM BAR -->
-    <div class="w-full h-24 sm:h-32 bg-[#D2C5A5] rounded-tl-[48px] rounded-tr-[48px] fixed bottom-0 left-0 right-0 z-10"></div>
-
-    </body>
-=======
 </body>
->>>>>>> Stashed changes
 </html>
