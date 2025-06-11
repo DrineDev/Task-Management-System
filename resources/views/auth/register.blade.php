@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< Updated upstream
 <html>
     <head>
        <meta charset="utf-8">
@@ -23,18 +24,53 @@
         <!-- SIGN UP FORM WRAPPER -->
      <div class="flex justify-center px-4 pt-8 pb-40 sm:pb-52 overflow-y-auto">
          <div class="bg-[#26231F] p-6 sm:p-10 rounded-xl shadow-lg w-full max-w-md">
+=======
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register · Task Management</title>
 
-             @if(session('success'))
-                <div>{{ session('success') }}</div>
-            @endif
+  {{-- Tailwind CDN + Google Fonts --}}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&family=Inter:wght@400;700&display=swap');
+    .font-istok { font-family: 'Istok Web', sans-serif; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="h-screen overflow-hidden bg-[#1E1E1E] text-[#F4EBD9] font-istok">
 
+  <!-- fixed header -->
+  <header class="fixed inset-x-0 top-0 h-20 bg-[#D2C5A5] rounded-bl-[60px] rounded-br-[60px]
+                 flex items-end justify-center px-4 z-20">
+    <nav class="w-36 flex justify-between pb-3 text-sm">
+      <a href="{{ route('register') }}" class="text-zinc-800 font-bold underline">Sign Up</a>
+      <a href="{{ route('login') }}"    class="text-zinc-800 font-bold">Log In</a>
+    </nav>
+  </header>
+
+  {{-- STATIC MIDDLE --}}
+  <main class="absolute inset-x-0 top-20 bottom-20 overflow-auto px-4">
+    <div class="h-full flex items-center justify-center">
+      <div class="bg-[#26231F] p-4 sm:p-6 rounded-xl shadow-lg w-full max-w-sm space-y-4">
+>>>>>>> Stashed changes
+
+      <!-- Title -->
+        <h1 class="text-center text-2xl font-bold text-stone-200">Create an Account</h1>
+
+        {{-- Session Feedback (backend hooks left intact) --}}
+        @if(session('success'))
+          <div class="text-green-400 text-sm">{{ session('success') }}</div>
+        @endif
         @if(session('error'))
-            <div>{{ session('error') }}</div>
+          <div class="text-red-400 text-sm">{{ session('error') }}</div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+        <form method="POST" action="{{ route('register') }}" class="space-y-4" id="register-form" novalidate>
+          @csrf
 
+<<<<<<< Updated upstream
             <!-- <div>
                 <label for="name" class="block text-left pb-3.5">Username</label>
                 <input class="bg-stone-200 rounded-xl px-4 py-2 w-full" id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
@@ -63,14 +99,58 @@
                 <label for="password_confirmation" class="block text-left pb-3.5">Confirm Password</label>
                 <input id="password_confirmation" type="password" name="password_confirmation" required>
             </div>
+=======
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-white text-sm mb-1">Username</label>
+            <input id="username" name="username" type="text" value="{{ old('username') }}" required
+              class="bg-stone-200 text-stone-900 text-sm font-inter px-3 py-2 w-full rounded-lg
+                     focus:outline-none focus:ring-2 focus:ring-[#C7B89B] transition" />
+            @error('username')
+              <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+            @enderror
+          </div>
 
-            <div class="pt-5">
-                <button class="w-full h-14 p-2.5 bg-[#C7B89B] rounded-xl inline-flex justify-center items-center gap-2.5 text-stone-900/80 text-base font-bold" type="submit">
-                    Sign Up
-                </button>
-            </div>
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-white text-sm mb-1">Email</label>
+            <input id="email" name="email" type="email" value="{{ old('email') }}" required
+              class="bg-stone-200 text-stone-900 text-sm font-inter px-3 py-2 w-full rounded-lg
+                     focus:outline-none focus:ring-2 focus:ring-[#C7B89B] transition" />
+            @error('email')
+              <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+            @enderror
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-white text-sm mb-1">Password</label>
+            <input id="password" name="password" type="password" required
+              class="bg-stone-200 text-stone-900/80 text-sm font-inter px-3 py-2 w-full rounded-lg
+                     focus:outline-none focus:ring-2 focus:ring-[#C7B89B] transition" />
+            @error('password')
+              <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+            @enderror
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <label for="password_confirmation" class="block text-white text-sm mb-1">Confirm Password</label>
+            <input id="password_confirmation" name="password_confirmation" type="password" required
+              class="bg-stone-200 text-stone-900/80 text-sm font-inter px-3 py-2 w-full rounded-lg
+                     focus:outline-none focus:ring-2 focus:ring-[#C7B89B] transition" />
+          </div>
+>>>>>>> Stashed changes
+
+          <!-- Submit Button -->
+          <button type="submit"
+            class="w-full h-12 bg-[#C7B89B] text-sm font-inter font-bold rounded-lg hover:bg-[#B5A688] transition-colors text-zinc-800
+                   flex items-center justify-center gap-2">
+            Sign Up
+          </button>
         </form>
 
+<<<<<<< Updated upstream
         <!-- @if(Route::has('login'))
             <p>Already have an account? <a href="{{ route('login') }}">Login</a></p>
         @endif
@@ -100,12 +180,43 @@
                 </div>
             </div>
 
+=======
+        {{-- Divider & Social--}}
+        <div class="flex items-center gap-2 text-xs text-white pt-4">
+          <div class="flex-grow border-t"></div>
+          <span class="font-istok">or sign up with</span>
+          <div class="flex-grow border-t"></div>
+>>>>>>> Stashed changes
         </div>
+        <div class="flex justify-center items-center gap-3 pt-2">
+          <a href="{{ route('auth.provider','google') }}"
+             class="flex-1 h-8 flex items-center justify-center gap-2 bg-white rounded-full shadow hover:opacity-90 transition-colors px-4">
+            <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="Google"/>
+            <span class="text-xs font-istok font-bold text-zinc-800">Google</span>
+          </a>
+          <a href="{{ route('auth.provider','facebook') }}"
+             class="flex-1 h-8 flex items-center justify-center gap-2 bg-white rounded-full shadow hover:opacity-90 transition-colors px-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                 class="w-4 h-4" alt="Facebook"/>
+            <span class="text-xs font-istok font-bold text-zinc-800">Facebook</span>
+          </a>
         </div>
 
+<<<<<<< Updated upstream
         <!-- BOTTOM BAR -->
     <footer class="fixed bottom-0 left-0 right-0 bg-[#D2C5A5] z-10 rounded-tl-[48px] rounded-tr-[48px] h-20 sm:h-28 pb-[env(safe-area-inset-bottom)]"></footer>
 
+=======
+      </div>
+    </div>
+  </main>
+>>>>>>> Stashed changes
 
-    </body>
+  {{-- FIXED FOOTER --}}
+  <footer class="fixed inset-x-0 bottom-0 h-20 bg-[#D2C5A5]
+                 rounded-tl-[60px] rounded-tr-[60px]
+                 flex items-center justify-center text-zinc-800 text-xs font-istok z-20">
+  </footer>
+
+</body>
 </html>

@@ -1,3 +1,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+<<<<<<< Updated upstream
+=======
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Istok+Web&display=swap');
+
+@layer base {
+    body {
+        @apply bg-background text-text;
+        font-family: 'Inter', sans-serif;
+    }
+}
+
+@layer components {
+    .modal {
+        @apply fixed inset-0 z-50 overflow-y-auto bg-black/50;
+    }
+
+    .modal-content {
+        @apply relative inline-block align-middle bg-[#2F2D2A] rounded-3xl text-left overflow-hidden shadow-xl transform transition-all duration-300 my-6 mx-auto max-w-md w-full p-8;
+    }
+
+    .modal-header {
+        @apply flex justify-between items-center mb-6;
+    }
+
+    .modal-title {
+        @apply text-[24px] font-semibold text-[#D2C5A5];
+    }
+
+    .modal-close {
+        @apply text-[#D2C5A5] hover:text-[#C7B89B] cursor-pointer transition-colors duration-200;
+    }
+
+    .form-input {
+        @apply shadow appearance-none border rounded-xl w-full py-3 px-4 text-[#2F2D2A] leading-tight focus:outline-none focus:shadow-outline bg-[#D2C5A5] text-lg;
+    }
+
+    .form-label {
+        @apply block text-[#C7B89B] text-sm font-bold mb-2;
+    }
+
+    .btn-primary {
+        @apply w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline;
+    }
+
+    .btn-secondary {
+        @apply bg-[#C7B89B] text-[#2F2D2A] rounded-xl px-6 py-2 font-bold hover:bg-[#B8A98B];
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700;
+    }
+}
+
+input[type="email"],
+input[type="password"] {
+    @apply px-3 py-2 rounded-lg w-full bg-[#F4EBD9] text-black mb-2.5;
+}
+
+>>>>>>> Stashed changes
