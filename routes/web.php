@@ -10,7 +10,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ChangeEmailController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\SupabaseLoginController;
 
 // Root redirect
 Route::get('/', function () {
@@ -32,20 +32,19 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 });
 
-
 // Social Login Route
 Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])
      ->name('auth.provider')
      ->where('provider', 'google|facebook');
 
-// Authenticated Routes (requires login)
-Route::middleware(['auth'])->group(function () {
+// Authenticated Routes (requires Supabase auth)
+Route::middleware(['auth', 'supabase.auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/dashboard/calendar', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar');
 
-    // Project routes - Updated to use ProjectController
+    // Project routes
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('/api/projects/{projectId}', [ProjectController::class, 'getProject'])->name('api.projects.get');
@@ -82,3 +81,4 @@ Route::middleware(['auth'])->group(function () {
 
 // OAuth callback endpoints (no auth required)
 Route::get('/auth/callback', [LoginController::class, 'supabaseCallback'])->name('auth.callback');
+Route::post('/auth/supabase-login', [SupabaseLoginController::class, 'login'])->name('auth.supabase-login');

@@ -100,23 +100,12 @@ class LoginController extends Controller
     public function redirectToProvider($provider)
     {
         $supabaseUrl = config('services.supabase.url');
-        
-        Log::info('OAuth Redirect Details:', [
-            'provider' => $provider,
-            'supabase_url' => $supabaseUrl,
-            'callback_url' => $supabaseUrl . '/auth/v1/callback',
-            'request_url' => request()->url(),
-            'request_host' => request()->getHost()
-        ]);
+        $redirectUrl = url('/auth/callback');
         
         $authUrl = $supabaseUrl . '/auth/v1/authorize?' . http_build_query([
             'provider' => $provider,
-            'redirect_to' => $supabaseUrl . '/auth/v1/callback',
+            'redirect_to' => $redirectUrl,
             'scopes' => 'email profile',
-        ]);
-
-        Log::info('Generated auth URL:', [
-            'url' => $authUrl
         ]);
 
         return redirect($authUrl);
@@ -124,79 +113,15 @@ class LoginController extends Controller
 
     public function supabaseCallback(Request $request)
     {
-        Log::info('OAuth callback received', [
-            'query' => $request->query(),
-            'fragment' => $request->fragment(),
-            'full_url' => $request->fullUrl()
-        ]);
-
-        // Get the access token from query parameters or URL fragment
-        $accessToken = $request->query('access_token');
-        if (!$accessToken) {
-            // Try to get from URL fragment
-            $fullUrl = $request->fullUrl();
-            if (preg_match('/access_token=([^&]+)/', $fullUrl, $matches)) {
-                $accessToken = $matches[1];
-            }
-        }
-        
-        if ($accessToken) {
-            try {
-                // Get user info from Supabase using the access token
-                $supabaseUrl = config('services.supabase.url');
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    'apikey' => config('services.supabase.anon_key'),
-                ])->get($supabaseUrl . '/auth/v1/user');
-
-                if ($response->successful()) {
-                    $userData = $response->json();
-                    $user = User::fromSupabase($userData);
-                    
-                    // Store the tokens in session
-                    $request->session()->put('supabase_access_token', $accessToken);
-                    $request->session()->put('supabase_token_expires_at', now()->addHour());
-                    
-                    Auth::login($user);
-                    $request->session()->regenerate();
-
-                    // Redirect to dashboard without the access token in URL
-                    return redirect()->route('dashboard');
-                }
-            } catch (\Exception $e) {
-                Log::error('Error during OAuth callback', [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-            }
-        }
-
-        return redirect()->route('login')->with('error', 'Authentication failed');
+        // The callback is now handled by the supabase_callback.blade.php view
+        return view('auth.supabase_callback');
     }
 
     public function logout(Request $request)
     {
-        $supabaseUrl = config('services.supabase.url');
-        $supabaseAnonKey = config('services.supabase.anon_key');
-        $accessToken = $request->session()->get('supabase_access_token');
-
-        if ($supabaseUrl && $supabaseAnonKey && $accessToken) {
-            try {
-                Http::withHeaders([
-                    'apikey' => $supabaseAnonKey,
-                    'Authorization' => 'Bearer ' . $accessToken,
-                ])->post($supabaseUrl . '/auth/v1/logout');
-            } catch (\Exception $e) {
-                Log::error('Supabase logout API error: ' . $e->getMessage());
-            }
-        }
-
-        $request->session()->forget(['supabase_user', 'supabase_access_token', 'supabase_refresh_token', 'supabase_token_expires_at']);
-
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/')->with('success', 'Successfully logged out.');
+        // Clear Supabase session
+        session()->forget(['supabase_access_token', 'supabase_refresh_token', 'user']);
+        
+        return redirect('/task-management-system/login');
     }
 }

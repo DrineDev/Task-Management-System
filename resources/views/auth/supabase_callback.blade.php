@@ -21,41 +21,43 @@
     <p>Logging you in...</p>
 
     <script>
-        const SUPABASE_URL = '{{ config('services.supabase.url') }}';
-        const SUPABASE_ANON_KEY = '{{ config('services.supabase.anon_key') }}';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                redirectTo: '{{ route('dashboard') }}'
-            }
-        });
-
-        // Get the access token from query parameters or URL fragment
-        const urlParams = new URLSearchParams(window.location.search);
-        let accessToken = urlParams.get('access_token');
-        let refreshToken = urlParams.get('refresh_token');
-
-        // If not in query params, try URL fragment
-        if (!accessToken) {
-            const hash = window.location.hash.substring(1);
-            const hashParams = new URLSearchParams(hash);
-            accessToken = hashParams.get('access_token');
-            refreshToken = hashParams.get('refresh_token');
-        }
+        // Get the access token from URL fragment
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        const expiresAt = params.get('expires_at');
+        const expiresIn = params.get('expires_in');
 
         if (accessToken) {
-            // Store the tokens in localStorage for Supabase client
-            localStorage.setItem('supabase.auth.token', JSON.stringify({
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                expires_at: Date.now() + (3600 * 1000) // 1 hour from now
-            }));
-
-            // Redirect to dashboard without the access token in URL
-            window.location.href = '{{ route('dashboard') }}';
+            // Send the tokens to the server
+            fetch('/task-management-system/auth/supabase-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                    expires_at: expiresAt,
+                    expires_in: expiresIn
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to dashboard
+                    window.location.href = '/task-management-system/dashboard';
+                } else {
+                    throw new Error('Login failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.location.href = '/task-management-system/login';
+            });
         } else {
-            console.error("No access token found in URL");
-            window.location.href = '{{ route('login') }}';
+            window.location.href = '/task-management-system/login';
         }
     </script>
 </body>

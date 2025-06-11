@@ -54,18 +54,8 @@ class DashboardController extends Controller
 
             $projects = $projectsResponse->successful() ? $projectsResponse->json() : [];
 
-            // Get incomplete projects for task modals
-            $incompleteProjectsResponse = Http::withHeaders([
-                'apikey' => config('services.supabase.key'),
-                'Authorization' => 'Bearer ' . config('services.supabase.key'),
-                'Content-Type' => 'application/json',
-            ])->get(config('services.supabase.url') . '/rest/v1/projects', [
-                'user_id' => 'eq.' . $user->id,
-                'is_completed' => 'eq.false',
-                'order' => 'created_at.desc'
-            ]);
-
-            $incompleteProjects = $incompleteProjectsResponse->successful() ? $incompleteProjectsResponse->json() : [];
+            // Get projects for the add task modal
+            $projectsForTask = $projects;
 
             // Calculate stats
             $stats = [
@@ -160,9 +150,6 @@ class DashboardController extends Controller
             $addTask = $request->has('add_task');
             // Support for add project modal
             $addProject = $request->has('add_project');
-
-            // Get projects for the add task modal (only incomplete ones)
-            $projectsForTask = $incompleteProjects;
 
             return view('dashboard.dashboard', [
                 'user' => $user,
