@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Istok+Web&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter&family=Istok+Web&display=swap');
 
 @layer base {
     body {
@@ -42,7 +42,7 @@
     }
 
     .btn-primary {
-        @apply w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:shadow-outline;
+        @apply w-full bg-[#D2C5A5] text-[#2F2D2A] rounded-xl py-3 font-bold hover:bg-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-[#C7B89B] focus:ring-offset-2 focus:ring-offset-[#2F2D2A];
     }
 
     .btn-secondary {

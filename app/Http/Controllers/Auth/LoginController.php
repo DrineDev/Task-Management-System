@@ -100,19 +100,20 @@ class LoginController extends Controller
     public function redirectToProvider($provider)
     {
         $supabaseUrl = config('services.supabase.url');
+        $appUrl = config('app.url');
         
         Log::info('OAuth Redirect Details:', [
             'provider' => $provider,
             'supabase_url' => $supabaseUrl,
-            'supabase_url_from_env' => env('SUPABASE_URL'),
-            'callback_url' => $supabaseUrl . '/auth/v1/callback',
+            'app_url' => $appUrl,
+            'callback_url' => $appUrl . '/auth/callback',
             'request_url' => request()->url(),
             'request_host' => request()->getHost()
         ]);
         
         $authUrl = $supabaseUrl . '/auth/v1/authorize?' . http_build_query([
             'provider' => $provider,
-            'redirect_to' => $supabaseUrl . '/auth/v1/callback',
+            'redirect_to' => $appUrl . '/auth/callback',
             'scopes' => 'email profile',
         ]);
 
