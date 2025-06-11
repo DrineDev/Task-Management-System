@@ -21,10 +21,14 @@ export default {
                 background: '#1E1E1E',
                 text: '#F4EBD9',
             },
+            colors: {
+                primary: '#C7B89B',
+                secondary: '#2F2D2A',
+                background: '#1E1E1E',
+                text: '#F4EBD9',
+            },
         },
     },
-
-
 
     plugins: [
         require('@tailwindcss/forms'),

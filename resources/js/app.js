@@ -1,8 +1,8 @@
 import './bootstrap';
+import '../css/app.css';
+import '../css/dashboard.css';
 
 import Alpine from 'alpinejs';
-
-import '../css/login.css';
 
 window.Alpine = Alpine;
 

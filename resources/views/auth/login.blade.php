@@ -139,5 +139,5 @@
                  flex items-center justify-center text-zinc-800 text-xs font-istok z-20">
   </footer>
 
-    </body>
+</body>
 </html>
