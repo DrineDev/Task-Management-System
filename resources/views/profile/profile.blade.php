@@ -222,13 +222,13 @@
   </main>
 
   <!-- Footer -->
-  <footer class="fixed bottom-0 left-0 right-0 w-full h-32 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
-    <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
+<footer class="w-full h-28 bg-[#D2C5A5] rounded-tl-[72px] rounded-tr-[72px] inset-x-0 flex items-center justify-around md:justify-center md:space-x-16 px-8 py-4 shadow-lg">
+    <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-user text-[40px] mb-1"></i>
-    </button>
-    <button class="w-28 h-28 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+    </a>
+    <button id="addbutton" class="w-28 h-28 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[40px] md:text-[20px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
         <i class="fas fa-plus"></i>
-    </button>
+      </button>
     <a href="{{ route('dashboard') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
         <i class="fas fa-clipboard-list text-[40px] mb-1"></i>
     </a>

@@ -114,7 +114,7 @@
           </form>
 
           <div class="mt-8">
-            <a href="{{ route('profile.show') }}" class="control-box p-4 rounded-lg text-left text-black w-full inline-block">
+            <a href="{{ route('profile.show') }}" class="control-box px-3 py-2 rounded-md text-sm text-black inline-block bg-white shadow">
               Back to Profile
             </a>
           </div>
