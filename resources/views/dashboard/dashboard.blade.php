@@ -21,7 +21,7 @@
             <p class="text-[12px] md:text-[16px] text-[#2F2D2A]">Welcome Back</p>
         </div>
     </a>
-    <button onclick="showNotification()" class="w-16 h-16 md:w-20 md:h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
+    <button class="w-16 h-16 md:w-20 md:h-20 bg-[#2F2D2A] text-[#D2C5A5] rounded-full p-2 hover:text-[#C7B89B] focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 md:size-10">
     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
     </svg>
@@ -195,11 +195,11 @@
         </main>
 
     <!-- Bottom Navigation -->
-    <footer class="w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-tl-[36px] md:rounded-tl-[72px] rounded-tr-[36px] md:rounded-tr-[72px] flex items-center justify-around md:justify-center md:space-x-16">
+    <footer class="fixed bottom-0 left-0 w-full h-auto md:h-32 px-4 md:px-8 py-4 bg-[#D2C5A5] rounded-tl-[36px] md:rounded-tl-[72px] rounded-tr-[36px] md:rounded-tr-[72px] flex items-center justify-around md:justify-center md:space-x-16 z-50">
         <a href="{{ route('profile.show') }}" class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">
             <i class="fas fa-user text-[24px] md:text-[40px] mb-1"></i>
         </a>
-        <a href="{{ route('dashboard', ['add_task' => true]) }}" class="w-16 h-16 md:w-20 md:h-20 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[24px] md:text-[40px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
+        <a href="{{ route('dashboard', ['add_task' => true]) }}" class="w-20 h-20 md:w-24 md:h-24 bg-[#ECE3D2] rounded-lg flex items-center justify-center text-[#1B1A19] text-[32px] md:text-[48px] shadow-xl hover:bg-[#928c80] transition-colors -mt-8 md:-mt-12">
             <i class="fas fa-plus"></i>
         </a>
         <button class="text-[#1B1A19] hover:text-[#53504c] transition-colors flex flex-col items-center">

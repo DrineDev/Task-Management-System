@@ -22,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force the correct base URL
+        if (app()->environment('local')) {
+            $baseUrl = 'http://localhost/task-management-system';
+            config(['app.url' => $baseUrl]);
+            \URL::forceRootUrl($baseUrl);
+        }
+
         // Share user profile data with views
         View::composer(['dashboard.*', 'profile.*'], function ($view) {
             if (auth()->check()) {

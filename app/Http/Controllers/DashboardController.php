@@ -67,7 +67,8 @@ class DashboardController extends Controller
                 })),
                 'overdue' => count(array_filter($tasks, function($task) {
                     return !($task['is_completed'] ?? false) && 
-                           strtotime($task['deadline']) < strtotime('today');
+                           isset($task['deadline']) && 
+                           strtotime($task['deadline']) < time();
                 }))
             ];
 
@@ -478,7 +479,8 @@ class DashboardController extends Controller
                 })),
                 'overdue' => count(array_filter($tasks, function($task) {
                     return !($task['is_completed'] ?? false) && 
-                           strtotime($task['deadline']) < strtotime('today');
+                           isset($task['deadline']) && 
+                           strtotime($task['deadline']) < time();
                 }))
             ];
 

@@ -39,9 +39,12 @@
             'action_url' => route('dashboard', ['edit_task' => $task['id']])
         ];
     }
+
+    // Only show notifications if this is a direct dashboard load (no modal parameters)
+    $showNotifications = empty(request()->query()) && count($notifications) > 0;
 @endphp
 
-<div id="notificationPanel" class="fixed top-20 right-4 w-96 bg-[#2F2D2A] rounded-xl shadow-lg z-50 hidden">
+<div id="notificationPanel" class="fixed top-20 right-4 w-96 bg-[#2F2D2A] rounded-xl shadow-lg z-50 {{ $showNotifications ? '' : 'hidden' }}">
     <div class="p-4 border-b border-[#3D3D3D]">
         <div class="flex justify-between items-center">
             <h3 class="text-[#C7B89B] text-lg font-semibold">Notifications</h3>
@@ -101,24 +104,18 @@
 </style>
 
 <script>
-    function showNotification() {
-        const panel = document.getElementById('notificationPanel');
-        panel.classList.remove('hidden');
-        setTimeout(() => {
-            panel.classList.add('hidden');
-        }, 10000); // Auto-hide after 10 seconds
-    }
-
     function hideNotification() {
         const panel = document.getElementById('notificationPanel');
         panel.classList.add('hidden');
     }
 
-    // Show notifications on page load if there are any
+    // Auto-hide notifications after 10 seconds if they are visible
     document.addEventListener('DOMContentLoaded', function() {
-        const notifications = @json($notifications);
-        if (notifications.length > 0) {
-            showNotification();
+        const panel = document.getElementById('notificationPanel');
+        if (!panel.classList.contains('hidden')) {
+            setTimeout(() => {
+                panel.classList.add('hidden');
+            }, 10000);
         }
     });
 </script>
