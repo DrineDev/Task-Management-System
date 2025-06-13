@@ -52,6 +52,60 @@
     .btn-danger {
         @apply bg-red-600 text-white rounded-xl px-6 py-2 font-bold hover:bg-red-700;
     }
+
+    .has-task {
+        @apply bg-[#D2C5A5] text-[#2F2D2A] font-semibold;
+    }
+
+    .has-deadline {
+        @apply border-b-4 border-[#ef4444] relative;
+    }
+
+    .has-deadline::after {
+        content: '';
+        @apply absolute bottom-0 left-0 right-0 h-0.5 bg-[#ef4444];
+    }
+
+    /* Add more specific styles for calendar days */
+    .calendar-day.has-task {
+        @apply bg-[#D2C5A5] text-[#2F2D2A] font-semibold;
+    }
+
+    .calendar-day.has-deadline {
+        @apply border-b-4 border-[#ef4444] relative;
+    }
+
+    .calendar-day.has-deadline::after {
+        content: '';
+        @apply absolute bottom-0 left-0 right-0 h-0.5 bg-[#ef4444];
+    }
+
+    /* Calendar day styles */
+    .calendar-day {
+        @apply h-8 flex items-center justify-center text-[#ece3d2] hover:bg-[#3D3D3D] rounded cursor-pointer;
+    }
+
+    .calendar-day.has-task {
+        @apply bg-[#D2C5A5] !important;
+        @apply text-[#2F2D2A] !important;
+        @apply font-semibold !important;
+    }
+
+    .calendar-day.has-deadline {
+        @apply border-b-4 !important;
+        @apply border-[#ef4444] !important;
+        @apply relative !important;
+    }
+
+    .calendar-day.has-deadline::after {
+        content: '';
+        @apply absolute !important;
+        @apply bottom-0 !important;
+        @apply left-0 !important;
+        @apply right-0 !important;
+        @apply h-0.5 !important;
+        @apply bg-[#ef4444] !important;
+    }
 }
 
 input[type="email"],

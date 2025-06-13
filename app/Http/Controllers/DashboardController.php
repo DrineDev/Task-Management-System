@@ -225,6 +225,7 @@ class DashboardController extends Controller
     public function getCalendarData()
     {
         $user = Auth::user();
+        \Log::info('Fetching calendar data for user', ['user_id' => $user->id]);
 
         $response = Http::withHeaders([
             'apikey' => config('services.supabase.key'),
@@ -238,6 +239,8 @@ class DashboardController extends Controller
 
         if ($response->successful()) {
             $tasks = $response->json();
+            \Log::info('Raw tasks data from database', ['tasks' => $tasks]);
+            
             $calendarData = [];
 
             foreach ($tasks as $task) {
@@ -249,13 +252,19 @@ class DashboardController extends Controller
                     'id' => $task['id'],
                     'title' => $task['title'],
                     'priority' => $task['priority'],
-                    'is_completed' => $task['is_completed']
+                    'is_completed' => $task['is_completed'],
+                    'deadline' => $task['deadline']
                 ];
             }
 
+            \Log::info('Formatted calendar data', ['calendarData' => $calendarData]);
             return response()->json($calendarData);
         }
 
+        \Log::error('Failed to fetch calendar data', [
+            'status' => $response->status(),
+            'body' => $response->body()
+        ]);
         return response()->json([], 500);
     }
 

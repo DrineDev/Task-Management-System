@@ -38,21 +38,45 @@ function formatDateKey(date) {
     return date.toISOString().split('T')[0];
 }
 
-async function loadCalendarData() {
-    try {
-        const response = await fetch('/dashboard/calendar');
-        if (response.ok) {
-            tasks = await response.json();
-            renderCalendar(currentDate);
-        } else {
-            console.error('Failed to load calendar data');
-        }
-    } catch (error) {
-        console.error('Error loading calendar data:', error);
+function initializeCalendarData() {
+    // Get tasks from the DataStore that was initialized in dashboard.blade.php
+    const allTasks = DataStore.getTasks();
+    console.log('Initializing calendar with tasks:', allTasks);
+    
+    if (!allTasks || allTasks.length === 0) {
+        console.warn('No tasks found in DataStore');
+        return;
     }
+    
+    // Format tasks into calendar data structure
+    tasks = {};
+    allTasks.forEach(task => {
+        if (!task.deadline) {
+            console.log('Task has no deadline:', task);
+            return;
+        }
+        const date = formatDateKey(new Date(task.deadline));
+        if (!tasks[date]) {
+            tasks[date] = [];
+        }
+        tasks[date].push({
+            id: task.id,
+            title: task.title,
+            priority: task.priority,
+            is_completed: task.is_completed,
+            deadline: task.deadline
+        });
+    });
+    
+    console.log('Formatted calendar data:', tasks);
+    if (Object.keys(tasks).length === 0) {
+        console.warn('No tasks with deadlines found');
+    }
+    renderCalendar(currentDate);
 }
 
 function renderCalendar(date) {
+    console.log('Rendering calendar for date:', date);
     const monthYear = document.getElementById('monthYear');
     const calendarDays = document.getElementById('calendarDays');
     
@@ -76,7 +100,8 @@ function renderCalendar(date) {
     // Add days of month
     for (let day = 1; day <= lastDay.getDate(); day++) {
         const dayElement = document.createElement('div');
-        dayElement.className = 'h-8 flex items-center justify-center text-[#ece3d2] hover:bg-[#3D3D3D] rounded cursor-pointer';
+        // Base classes for all days
+        dayElement.className = 'calendar-day h-8 flex items-center justify-center text-[#ece3d2] hover:bg-[#3D3D3D] rounded cursor-pointer';
         
         const currentDate = new Date(date.getFullYear(), date.getMonth(), day);
         const dateKey = formatDateKey(currentDate);
@@ -86,8 +111,38 @@ function renderCalendar(date) {
         
         // Check if there are tasks for this day
         if (tasks[dateKey]) {
+            console.log('Found tasks for date:', dateKey, tasks[dateKey]);
+            
+            // Add task count to title
+            const taskCount = tasks[dateKey].length;
+            dayElement.title = `${taskCount} task(s)`;
+            
+            // Add visual indicator for tasks
             dayElement.classList.add('has-task');
-            dayElement.title = `${tasks[dateKey].length} task(s)`;
+            console.log('Added has-task class to day:', day, 'Classes:', dayElement.className);
+            
+            // Check if any task has a deadline and is not completed
+            const hasDeadline = tasks[dateKey].some(task => {
+                const taskDate = new Date(task.deadline);
+                const taskDateKey = formatDateKey(taskDate);
+                const isDeadline = taskDateKey === dateKey && !task.is_completed;
+                console.log('Checking task deadline:', {
+                    day,
+                    taskDate,
+                    taskDateKey,
+                    dateKey,
+                    isCompleted: task.is_completed,
+                    isDeadline,
+                    task
+                });
+                return isDeadline;
+            });
+            
+            if (hasDeadline) {
+                console.log('Adding deadline highlight for day:', day);
+                dayElement.classList.add('has-deadline');
+                console.log('Updated classes for day:', day, 'Classes:', dayElement.className);
+            }
         }
         
         calendarDays.appendChild(dayElement);
@@ -136,10 +191,84 @@ function performSearch(searchQuery) {
     }
 }
 
+// Notification handling
+function initializeNotifications() {
+    console.log('Initializing notifications...');
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationPanel = document.getElementById('notificationPanel');
+    
+    console.log('Notification button:', notificationBtn);
+    console.log('Notification panel:', notificationPanel);
+    
+    let isNotificationVisible = false;
+    let notificationTimeout;
+
+    function showNotification() {
+        console.log('Showing notification...');
+        if (!isNotificationVisible && notificationPanel) {
+            notificationPanel.classList.remove('hidden');
+            // Force a reflow
+            notificationPanel.offsetHeight;
+            notificationPanel.classList.remove('translate-x-full');
+            isNotificationVisible = true;
+            
+            // Reset the auto-hide timeout
+            resetNotificationTimeout();
+        } else {
+            hideNotification();
+        }
+    }
+
+    function hideNotification() {
+        console.log('Hiding notification...');
+        if (isNotificationVisible && notificationPanel) {
+            notificationPanel.classList.add('translate-x-full');
+            setTimeout(() => {
+                notificationPanel.classList.add('hidden');
+                isNotificationVisible = false;
+            }, 300);
+        }
+    }
+
+    function resetNotificationTimeout() {
+        if (notificationTimeout) {
+            clearTimeout(notificationTimeout);
+        }
+        notificationTimeout = setTimeout(hideNotification, 10000);
+    }
+
+    // Add click event listener to notification button
+    if (notificationBtn) {
+        console.log('Adding click event listener to notification button');
+        notificationBtn.addEventListener('click', function(event) {
+            console.log('Notification button clicked');
+            event.stopPropagation(); // Prevent event from bubbling up
+            showNotification();
+        });
+    }
+
+    // Close notification when clicking outside
+    document.addEventListener('click', function(event) {
+        if (notificationPanel && isNotificationVisible && 
+            !notificationPanel.contains(event.target) && 
+            notificationBtn && !notificationBtn.contains(event.target)) {
+            hideNotification();
+        }
+    });
+
+    // Make functions globally available
+    window.showNotification = showNotification;
+    window.hideNotification = hideNotification;
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Load initial calendar data
-    loadCalendarData();
+    console.log('DOM Content Loaded');
+    // Initialize notifications
+    initializeNotifications();
+
+    // Initialize calendar with existing data
+    initializeCalendarData();
 
     // Calendar navigation
     document.getElementById('prevBtn').addEventListener('click', () => {
