@@ -94,13 +94,23 @@
             @csrf
             @method('PUT')
           <div class="input-box p-4 mb-3 rounded-lg">
+              <label for="current_email" class="block text-sm font-semibold mb-1">Current Email</label>
+              <input type="email" id="current_email" name="current_email" value="{{ old('current_email', $user->email) }}" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
+          </div>
+
+          <div class="input-box p-4 mb-3 rounded-lg">
               <label for="current_password" class="block text-sm font-semibold mb-1">Current Password</label>
               <input type="password" id="current_password" name="current_password" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
           </div>
 
           <div class="input-box p-4 mb-3 rounded-lg">
-              <label for="email" class="block text-sm font-semibold mb-1">New Email</label>
-              <input type="email" id="email" name="email" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
+              <label for="new_email" class="block text-sm font-semibold mb-1">New Email</label>
+              <input type="email" id="new_email" name="new_email" value="{{ old('new_email') }}" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
+          </div>
+
+          <div class="input-box p-4 mb-3 rounded-lg">
+              <label for="new_email_confirmation" class="block text-sm font-semibold mb-1">Confirm New Email</label>
+              <input type="email" id="new_email_confirmation" name="new_email_confirmation" value="{{ old('new_email_confirmation') }}" class="w-full px-3 py-1.5 rounded border border-gray-300" required>
           </div>
 
           <div class="text-right">

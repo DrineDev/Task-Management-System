@@ -100,41 +100,137 @@ class LoginController extends Controller
     public function redirectToProvider($provider)
     {
         $supabaseUrl = config('services.supabase.url');
-        $appUrl = config('app.url');
-        
-        Log::info('OAuth Redirect Details:', [
+
+        // Get the full application URL including subdirectory
+        $appUrl = $this->getFullAppUrl();
+
+        Log::info('Starting OAuth redirect', [
             'provider' => $provider,
             'supabase_url' => $supabaseUrl,
             'app_url' => $appUrl,
-            'callback_url' => $appUrl . '/auth/callback',
+            'config_app_url' => config('app.url'),
             'request_url' => request()->url(),
-            'request_host' => request()->getHost()
+            'request_root' => request()->root(),
+            'request_host' => request()->getHost(),
+            'request_port' => request()->getPort(),
+            'request_protocol' => request()->secure() ? 'https' : 'http',
+            'script_name' => request()->server('SCRIPT_NAME'),
+            'request_uri' => request()->server('REQUEST_URI')
         ]);
-        
+
+        $redirectUrl = $appUrl . '/auth/supabase_callback';
+
         $authUrl = $supabaseUrl . '/auth/v1/authorize?' . http_build_query([
             'provider' => $provider,
-            'redirect_to' => $appUrl . '/auth/callback',
-            'scopes' => 'email profile',
+            'redirect_to' => $redirectUrl,
+            'scopes' => $provider === 'google' ? 'openid email profile' : 'email',
         ]);
 
         Log::info('Generated auth URL:', [
-            'url' => $authUrl
+            'url' => $authUrl,
+            'redirect_to' => $redirectUrl
         ]);
 
         return redirect($authUrl);
     }
 
+    /**
+     * Get the full application URL including subdirectory for XAMPP setups
+     */
+    private function getFullAppUrl()
+    {
+        // Force to use 127.0.0.1:8000 for local development
+        return 'http://127.0.0.1:8000';
+    }
+
     public function supabaseCallback(Request $request)
     {
-        // Get the full URL including the fragment
-        $fullUrl = $request->fullUrl();
-        
-        // Extract the access token from the URL fragment
-        if (preg_match('/access_token=([^&]+)/', $fullUrl, $matches)) {
-            $accessToken = $matches[1];
-            
+        Log::info('Received callback request', [
+            'method' => $request->method(),
+            'url' => $request->fullUrl(),
+            'headers' => $request->headers->all(),
+            'query' => $request->query(),
+            'all_input' => $request->all(),
+            'is_secure' => $request->secure()
+        ]);
+
+        if ($request->isMethod('post')) {
+            // Handle POST request from the callback view
+            $accessToken = $request->input('access_token');
+            $refreshToken = $request->input('refresh_token');
+
+            Log::info('Processing POST callback', [
+                'has_access_token' => !empty($accessToken),
+                'has_refresh_token' => !empty($refreshToken),
+                'access_token_length' => $accessToken ? strlen($accessToken) : 0
+            ]);
+
+            if (!$accessToken) {
+                Log::warning('No access token in POST request');
+                return response()->json(['success' => false, 'message' => 'No access token provided']);
+            }
+
             try {
                 // Get user info from Supabase using the access token
+                $supabaseUrl = config('services.supabase.url');
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'apikey' => config('services.supabase.anon_key'),
+                ])->get($supabaseUrl . '/auth/v1/user');
+
+                Log::info('Supabase user info response', [
+                    'status' => $response->status(),
+                    'body' => $response->json()
+                ]);
+
+                if ($response->successful()) {
+                    $userData = $response->json();
+                    $user = User::fromSupabase($userData);
+
+                    // Store the tokens in session
+                    $request->session()->put('supabase_access_token', $accessToken);
+                    if ($refreshToken) {
+                        $request->session()->put('supabase_refresh_token', $refreshToken);
+                    }
+                    $request->session()->put('supabase_token_expires_at', now()->addHour());
+
+                    Auth::login($user);
+                    $request->session()->regenerate();
+
+                    Log::info('Successfully authenticated user', [
+                        'user_id' => $user->id,
+                        'email' => $user->email
+                    ]);
+
+                    return response()->json(['success' => true]);
+                } else {
+                    Log::error('Failed to get user info from Supabase', [
+                        'status' => $response->status(),
+                        'body' => $response->json()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error during OAuth callback', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Authentication failed']);
+        }
+
+        // Handle GET requests - check for direct token parameters or error
+        if ($request->has('access_token')) {
+            // Direct callback with tokens in query params
+            $accessToken = $request->get('access_token');
+            $refreshToken = $request->get('refresh_token');
+
+            Log::info('Direct GET callback with tokens', [
+                'has_access_token' => !empty($accessToken),
+                'has_refresh_token' => !empty($refreshToken)
+            ]);
+
+            try {
                 $supabaseUrl = config('services.supabase.url');
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $accessToken,
@@ -144,26 +240,43 @@ class LoginController extends Controller
                 if ($response->successful()) {
                     $userData = $response->json();
                     $user = User::fromSupabase($userData);
-                    
-                    // Store the tokens in session
+
                     $request->session()->put('supabase_access_token', $accessToken);
+                    if ($refreshToken) {
+                        $request->session()->put('supabase_refresh_token', $refreshToken);
+                    }
                     $request->session()->put('supabase_token_expires_at', now()->addHour());
-                    
+
                     Auth::login($user);
                     $request->session()->regenerate();
 
-                    // Redirect to dashboard without any confirm key
-                    return redirect()->route('dashboard');
+                    return redirect()->route('dashboard')->with('success', 'Successfully logged in with ' . ucfirst($request->get('provider', 'OAuth')));
                 }
             } catch (\Exception $e) {
-                Log::error('Error during OAuth callback', [
+                Log::error('Error processing direct callback', [
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
             }
+
+            return redirect()->route('login')->with('error', 'Authentication failed');
         }
 
-        return redirect()->route('login')->with('error', 'Authentication failed');
+        // Check for OAuth errors
+        if ($request->has('error')) {
+            $error = $request->get('error');
+            $errorDescription = $request->get('error_description', 'Authentication failed');
+
+            Log::warning('OAuth error received', [
+                'error' => $error,
+                'error_description' => $errorDescription
+            ]);
+
+            return redirect()->route('login')->with('error', $errorDescription);
+        }
+
+        // For GET requests without direct tokens, return the callback view that will handle fragment tokens
+        return view('auth.supabase_callback');
     }
 
     public function logout(Request $request)

@@ -32,10 +32,10 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 });
 
+// OAuth routes (no auth required)
+Route::match(['get', 'post'], '/auth/supabase_callback', [LoginController::class, 'supabaseCallback'])->name('auth.callback');
+Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('auth.provider')->where('provider', 'google|facebook');
 
-// Social Login Route
-Route::get('/auth/{provider}', [SocialController::class, 'redirectToProvider'])
-     ->name('auth.provider');
 // Authenticated Routes (requires login)
 Route::middleware(['auth'])->group(function () {
     // Dashboard
@@ -77,7 +77,3 @@ Route::middleware(['auth'])->group(function () {
     // Logout
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });
-
-// OAuth callback endpoints (no auth required)
-Route::get('/auth/callback', [LoginController::class, 'supabaseCallback'])->name('auth.callback');
-Route::get('/auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('auth.provider')->where('provider', 'google|facebook');

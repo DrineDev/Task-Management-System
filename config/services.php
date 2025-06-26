@@ -46,6 +46,7 @@ return [
         'url' => env('SUPABASE_URL'),
         'anon_key' => env('SUPABASE_ANON_KEY'),
         'key' => env('SUPABASE_KEY'),
+        'project_ref' => env('SUPABASE_PROJECT_REF'),
     ],
 
 ];
