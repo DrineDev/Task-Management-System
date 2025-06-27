@@ -139,8 +139,8 @@ class LoginController extends Controller
      */
     private function getFullAppUrl()
     {
-        // Force to use 127.0.0.1:8000 for local development
-        return 'http://127.0.0.1:8000';
+        // Use the APP_URL environment variable for deployment flexibility
+        return config('app.url');
     }
 
     public function supabaseCallback(Request $request)
